@@ -48,19 +48,13 @@ def cleanup(output_folder):
     return
 
 
-def main():
-    parser = argparse.ArgumentParser(
-        description="Read a JSON file and display the data as a table. Coined towards Finanzguru exported data."
-    )
-    parser.add_argument("file_path", help="Path to the input JSON file")
-    parser.add_argument("--cleanup", help="Remove all files except bookings", action="store_true")
-    args = parser.parse_args()
-    json_data = read_json_file(args.file_path)
+def main(file_path, should_cleanup=False):
+    json_data = read_json_file(file_path)
     output_folder = "Finanzguru_data_" + datetime.now().strftime("%Y-%m-%d")
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
     print_table(json_data, output_folder)
-    if args.cleanup:
+    if should_cleanup:
         print("Removing all read files except bookings.csv")
         cleanup(output_folder)
     print("Data has been written to the folder: " + output_folder)
