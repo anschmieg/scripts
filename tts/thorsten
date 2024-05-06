@@ -63,18 +63,6 @@ else
     play_audio=0
 fi
 
-# Define the model's vocabulary
-vocabulary="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzäöüÄÖÜß0123456789.,:;!?-–—() "
-
-# Remove unsupported characters from the text
-filtered_text=""
-for (( i=0; i<${#text}; i++ )); do
-    char="${text:$i:1}"
-    if [[ $vocabulary == *"$char"* ]]; then
-        filtered_text+="$char"
-    fi
-done
-
 # Use the filtered text as the input to the model
 tts --model_name tts_models/de/thorsten/tacotron2-DDC --text "$filtered_text" --out_path $to
 
