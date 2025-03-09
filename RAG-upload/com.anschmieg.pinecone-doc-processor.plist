@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.anschmieg.pinecone-doc-processor</string>
+    
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>-c</string>
+        <string>source $HOME/Projects/scripts/RAG-upload/.venv/bin/activate && python $HOME/Projects/scripts/RAG-upload/launchd-document-processor.py</string>
+        <!-- For testing with dry run mode, uncomment the line below and comment the line above -->
+        <!-- <string>source $HOME/Projects/scripts/RAG-upload/.venv/bin/activate && python $HOME/Projects/scripts/RAG-upload/launchd-document-processor.py --dry-run</string> -->
+    </array>
+    
+    <key>StartInterval</key>
+    <integer>3600</integer>
+    
+    <key>StandardOutPath</key>
+    <string>/Users/adrian/Library/Logs/PineconeDocProcessor.log</string>
+    
+    <key>StandardErrorPath</key>
+    <string>/Users/adrian/Library/Logs/PineconeDocProcessor.err.log</string>
+    
+    <key>RunAtLoad</key>
+    <true/>
+</dict>
+</plist>
