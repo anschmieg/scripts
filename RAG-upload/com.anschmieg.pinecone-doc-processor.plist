@@ -9,9 +9,9 @@
     <array>
         <string>/bin/bash</string>
         <string>-c</string>
-        <string>source $HOME/Projects/scripts/RAG-upload/.venv/bin/activate && python $HOME/Projects/scripts/RAG-upload/launchd-document-processor.py</string>
+        <string>source $HOME/Projects/scripts/RAG-upload/.venv/bin/activate && python $HOME/Projects/scripts/RAG-upload/bin/process-docs.py</string>
         <!-- For testing with dry run mode, uncomment the line below and comment the line above -->
-        <!-- <string>source $HOME/Projects/scripts/RAG-upload/.venv/bin/activate && python $HOME/Projects/scripts/RAG-upload/launchd-document-processor.py --dry-run</string> -->
+        <!-- <string>source $HOME/Projects/scripts/RAG-upload/.venv/bin/activate && python $HOME/Projects/scripts/RAG-upload/bin/process-docs.py --dry-run</string> -->
     </array>
     
     <key>StartInterval</key>

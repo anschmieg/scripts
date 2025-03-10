@@ -1,135 +1,158 @@
-# Pinecone Document Processor
+# RAG Processor
 
-## Prerequisites
+A document processing system for creating and maintaining a Retrieval-Augmented Generation (RAG) index in Pinecone.
 
-### System Requirements
-- macOS (10.15+)
-- Python 3.8+
-- Homebrew
+## Overview
 
-### Required Tools
-1. Install Poppler for PDF conversion:
-```bash
-brew install poppler
+This tool scans a directory for supported document types, processes them, extracts their text, and uploads the text and metadata to a Pinecone index for use in RAG applications.
+
+## Features
+
+- Recursive directory scanning
+- Automatic detection of modified files
+- Support for various document formats (PDF, DOCX, TXT, PPTX, etc.)
+- Preprocessing of large documents with file format conversion
+- Efficient caching to avoid reprocessing unchanged files
+
+## Directory Structure
+
+```
+/
+├── bin/                    # Command line scripts
+│   ├── process-docs.py     # Main document processing script
+│   └── utils.py            # Utility commands
+├── tools/                  # Debugging and utility tools
+│   └── debugger.py         # Environment debugging tools
+├── rag_processor/          # Core package
+│   ├── core/               # Core functionality
+│   │   ├── config.py       # Configuration handling
+│   │   ├── file_utils.py   # File utility functions
+│   │   └── logging_setup.py # Logging configuration
+│   ├── processor/          # Document processing
+│   │   ├── document_processor.py # Main document processor
+│   │   ├── preprocessing.py # File preprocessing logic
+│   │   └── file_converter.py # Document text extraction
+│   └── pinecone/           # Pinecone integration
+│       ├── client.py       # Pinecone client setup
+│       └── uploader.py     # Document upload logic
+├── backward_compat.py      # Backward compatibility script
+├── .env                    # Environment configuration
+└── README.md               # This file
 ```
 
-2. Install Python dependencies:
-```bash
-pip3 install python-dotenv pinecone-client
-```
+## Installation
+
+1. Clone the repository
+2. Create a virtual environment: `python -m venv .venv`
+3. Activate the virtual environment: `source .venv/bin/activate`
+4. Install dependencies: `pip install -r requirements.txt`
 
 ## Configuration
 
-### 1. Environment Setup
-1. Create a `.env` file in the script directory with your Pinecone API key:
+Create a `.env` file with the following variables:
+
 ```
-PINECONE_API_KEY=your_pinecone_api_key_here
-```
-
-2. Edit the script configuration:
-- `TARGET_FOLDER`: Path to your documents folder
-- `namespace`: Pinecone namespace (optional)
-- `index_name`: Your Pinecone index name
-
-### 2. Launchd Configuration
-You need to create an XML plist file to schedule the script with macOS' launchd service.
-1. The file `LAUNCHD_CONFIG.xml` contains a sample configuration. Adjust it to match your setup.
-2. Save the file to `~/Library/LaunchAgents/com.yourname.pinecone-doc-processor.plist`.
-
-### Installation
-```bash
-# Make script executable
-chmod +x launchd-document-processor.py
-
-    # ONLY If not done before, copy launchd configuration
-    cp com.yourname.pinecone-doc-processor.plist ~/Library/LaunchAgents/
-
-# Load the launchd job
-launchctl load ~/Library/LaunchAgents/com.yourname.pinecone-doc-processor.plist
+PINECONE_API_KEY=your_api_key_here
+TARGET_FOLDER=$HOME/path/to/documents
+NAMESPACE=your_namespace
+INDEX_NAME=your_index_name
 ```
 
 ## Usage
 
-### Scheduled Document Processor
-This script is designed to run automatically via `launchd` on macOS. It processes documents in the specified folder and uploads them to Pinecone.
-
-### Manual Actions
-You can manually process documents or upload a single file using the `manual-actions.py` script.
-
-#### Process All Documents
-```bash
-source .venv/bin/activate
-python3 manual-actions.py --process
-```
-
-#### Upload a Single File
-```bash
-source .venv/bin/activate
-python3 manual-actions.py --upload /path/to/your/file.txt
-```
-
-### Dry Run Mode
-You can test the app without performing actual uploads by using the `--dry-run` flag:
+### Process Documents
 
 ```bash
-source .venv/bin/activate
-python3 launchd-document-processor.py --dry-run
+# Process all documents in the target folder
+./bin/process-docs.py
+
+# Dry run (no actual uploads)
+./bin/process-docs.py --dry-run
+
+# Verbose output
+./bin/process-docs.py -v
+
+# Override target folder
+./bin/process-docs.py --target ~/Documents/some-other-folder
+
+# Process without recursion (top-level files only)
+./bin/process-docs.py --no-recursive
+
+# Display environment debug info
+./bin/process-docs.py --debug-env
 ```
 
-To update the file tracking cache even in dry run mode:
+### Utilities
 
 ```bash
-source .venv/bin/activate
-python3 launchd-document-processor.py --dry-run --dry-run-update-cache
+# Upload a specific file
+./bin/utils.py upload /path/to/file.pdf
+
+# Process all documents like process-docs.py
+./bin/utils.py process
+
+# Validate database against tracking JSON
+./bin/utils.py validate
+
+# Re-upload files missing from database
+./bin/utils.py validate --reupload
+
+# Show help
+./bin/utils.py --help
 ```
 
-### Verbose Logging
-For debugging purposes, you can enable verbose logging with the `--verbose` or `-v` flag:
+### Debugging
 
 ```bash
-source .venv/bin/activate
-python3 manual-actions.py --process --verbose
+# Check environment variables
+./tools/debugger.py env
+
+# List directories and files in the target folder
+./tools/debugger.py list
+
+# Validate database against tracking JSON (with detailed output)
+./tools/debugger.py validate
+
+# Run a command with clean environment
+./tools/debugger.py reset ./bin/process-docs.py --debug-env
+
+# Show help
+./tools/debugger.py --help
 ```
 
-This can be combined with dry run mode for testing:
+## Backward Compatibility
+
+If you previously used the old script names, a backward compatibility layer is available. Run:
 
 ```bash
-source .venv/bin/activate
-python3 manual-actions.py --process --dry-run --verbose
+python backward_compat.py
 ```
 
-## Supported File Types
-- Text files: .txt, .md, .json, .yaml, .csv, etc.
-- Documents: .pdf, .docx, .pptx, .xlsx
+This will create symlinks from old script names to the new ones, allowing you to continue using the old names if needed.
 
-## Change Detection
-The application uses a hybrid approach for efficient change detection:
+## Prerequisites
 
-1. **First Pass**: Check file modification timestamp (fast)
-2. **Second Pass**: If timestamp changed, verify with hash calculation (moderate)
-3. **Third Pass**: Only process and upload when content actually changed
+- Python 3.8+
+- Pandoc (for document preprocessing)
+- pdftotext (optional, for better PDF text extraction)
 
-This multi-stage approach optimizes performance while ensuring accuracy.
+## Scheduled Database Validation
 
-## Troubleshooting
-- Check logs at `~/Library/Logs/PineconeDocProcessor.log`
-- Verify Pinecone API key in `.env`
-- Ensure target folder is accessible
+To ensure your database integrity, you can set up a scheduled task to validate that all tracked files are still present in the Pinecone database:
 
-## Features
-- Automatic document processing
-- Efficient hybrid change detection
-- Supports multiple file types
-- Tracks processed files to avoid duplicates
-- Comprehensive metadata tracking (creation date, modification date, file hash)
-- Logs processing results
+```bash
+# Check for missing files in database
+./run.sh validate --check-disk
 
-## Metadata Tracking
-The system tracks the following metadata for each processed file:
-- File hash (SHA-256)
-- Creation date and time
-- Modification date and time
-- File size in bytes
-- Processing timestamp
+# Automatically re-upload missing files 
+./run.sh validate --reupload
 
-This metadata is used for efficient change detection and is included in the Pinecone records for better data management and retrieval.
+# Clean up tracking for files that no longer exist
+./run.sh validate --check-disk --clean
+```
+
+You can set up a cron job to run the validation periodically:
+
+## License
+
+MIT License
