@@ -12,13 +12,18 @@ from rag_processor.core.file_utils import (
     check_file_changed,
     load_processed_files,
     save_processed_files,
+    update_processed_files_tracking,
 )
 from rag_processor.core.logging_setup import logger
-from rag_processor.pinecone.uploader import upload_file_to_pinecone
+from rag_processor.pinecone.uploader import upload_files
 
 
 def get_pinecone_index():
     """Initialize and return the Pinecone index."""
+    # Only needed when using Vector DB mode
+    if CONFIG.get("use_assistant_api", True):
+        return None
+
     try:
         import pinecone
 
@@ -71,13 +76,30 @@ def find_processable_files(folder_path: str, recursive: bool = True) -> List[str
 
 
 def process_documents(
-    target_folder: str, dry_run: bool = False, recursive: bool = True
+    target_folder: str,
+    dry_run: bool = False,
+    recursive: bool = True,
+    parallel: int = 3,
+    batch_size: int = 10,
+    show_progress: bool = False,
 ) -> Tuple[int, int]:
     """Process and upload documents to Pinecone."""
     start_time = time.time()
 
     logger.info(f"Starting document processing in {target_folder}")
     logger.info(f"Dry run mode: {dry_run}")
+
+    # Log which API we're using
+    use_assistant = CONFIG.get("use_assistant_api", True)
+    logger.info(
+        f"Using {'Pinecone Assistant API' if use_assistant else 'Pinecone Vector DB'}"
+    )
+    if use_assistant:
+        assistant_name = CONFIG.get("assistant_name")
+        if assistant_name:
+            logger.info(f"Assistant name: {assistant_name}")
+        else:
+            logger.info("Using default assistant (no name specified)")
 
     # Get all processable files
     files = find_processable_files(target_folder, recursive)
@@ -86,54 +108,81 @@ def process_documents(
     # Load processed files log
     processed_files = load_processed_files()
 
-    # Initialize counters
-    processed_count = 0
+    # Filter only files that have changed
+    files_to_process = []
     unchanged_count = 0
-    error_count = 0
 
-    # Get Pinecone index if not in dry run mode
-    if not dry_run:
-        index = get_pinecone_index()
-
-    # Process each file
     for file_path in files:
         filename = os.path.basename(file_path)
+        if not check_file_changed(file_path, filename, processed_files):
+            logger.debug(f"Skipping unchanged file: {filename}")
+            unchanged_count += 1
+        else:
+            files_to_process.append(file_path)
 
-        try:
-            # Check if file has changed
-            if not check_file_changed(file_path, filename, processed_files):
-                logger.debug(f"Skipping unchanged file: {filename}")
-                unchanged_count += 1
-                continue
+    logger.info(
+        f"Files to process: {len(files_to_process)} (unchanged: {unchanged_count})"
+    )
 
-            logger.info(f"Processing file: {filename}")
+    # Initialize counters
+    processed_count = 0
+    error_count = 0
 
-            if not dry_run:
-                # Upload to Pinecone
-                success = upload_file_to_pinecone(
-                    file_path=file_path, index=index, namespace=CONFIG["namespace"]
-                )
+    # Get Pinecone index if using Vector DB and not in dry run mode
+    index = None
+    if not dry_run and not CONFIG.get("use_assistant_api", True):
+        index = get_pinecone_index()
 
-                if not success:
+    # Process files in optimized batch mode
+    if files_to_process:
+        if not dry_run:
+            # Use batch upload
+            batch_results = upload_files(
+                files_to_process,
+                index=index,
+                namespace=CONFIG["namespace"],
+                parallel=parallel,
+                batch_size=batch_size,
+                show_progress=show_progress,
+            )
+
+            # Process results and update tracking
+            for file_path in files_to_process:
+                filename = os.path.basename(file_path)
+                result = batch_results.get(filename)
+
+                # Check for success - different result formats depending on API used
+                success = False
+                if isinstance(result, dict):  # Assistant API result
+                    if "id" in result and "error" not in result:
+                        success = True
+                        # Update file tracking
+                        update_processed_files_tracking(
+                            file_path, filename, processed_files
+                        )
+                        processed_files[filename]["assistant_file_id"] = result["id"]
+                else:  # Vector DB boolean result
+                    success = bool(result)
+                    if success:
+                        # Update file tracking
+                        update_processed_files_tracking(
+                            file_path, filename, processed_files
+                        )
+
+                if success:
+                    processed_count += 1
+                else:
                     error_count += 1
-                    continue
 
-            # Update processed files log with new hash
-            if not dry_run or "--dry-run-update-cache" in sys.argv:
-                from rag_processor.core.file_utils import generate_file_hash
-
-                file_hash = generate_file_hash(file_path)
-                processed_files[filename] = {
-                    "path": file_path,
-                    "hash": file_hash,
-                    "last_processed": time.strftime("%Y-%m-%d %H:%M:%S"),
-                }
-
-            processed_count += 1
-
-        except Exception as e:
-            logger.error(f"Error processing {filename}: {e}")
-            error_count += 1
+        elif "--dry-run-update-cache" in sys.argv:
+            # Only update tracking in dry-run if explicitly requested
+            for file_path in files_to_process:
+                filename = os.path.basename(file_path)
+                update_processed_files_tracking(file_path, filename, processed_files)
+                processed_count += 1
+        else:
+            # Dry run without tracking updates
+            processed_count = len(files_to_process)
 
     # Save updated processed files log
     if processed_count > 0 and (not dry_run or "--dry-run-update-cache" in sys.argv):

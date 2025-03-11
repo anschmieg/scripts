@@ -4,17 +4,11 @@ Configuration management for RAG Processor
 
 import os
 
-from dotenv import dotenv_values, load_dotenv
+from dotenv import load_dotenv
 
-# Get existing environment variables before loading .env
-existing_env = dict(os.environ)
+# Remove redundant code - we only need one load_dotenv call
 
 # Load environment variables from .env file WITH override
-dotenv_values_dict = dotenv_values(".env")
-for key, value in dotenv_values_dict.items():
-    os.environ[key] = value
-
-# Now load with load_dotenv to ensure all variables are set properly
 load_dotenv(override=True)
 
 # Handle $HOME or ~/ expansions in TARGET_FOLDER
@@ -31,6 +25,17 @@ CONFIG = {
         "~/Library/Application Support/PineconeDocProcessor/processed_files.json"
     ),
     "log_path": os.path.expanduser("~/Library/Logs/PineconeDocProcessor.log"),
+    # Pinecone Assistant options
+    "pinecone_api_key": os.getenv("PINECONE_API_KEY"),
+    "assistant_api_url": os.getenv(
+        "ASSISTANT_API_URL", "https://assistant.api.pinecone.io/v1"
+    ),
+    "assistant_name": os.getenv(
+        "ASSISTANT_NAME", ""
+    ),  # Changed from assistant_id to assistant_name
+    "use_assistant_api": os.getenv("USE_ASSISTANT_API", "true").lower()
+    == "true",  # Toggle for API choice
+    # Legacy options kept for backward compatibility
     "namespace": os.getenv("NAMESPACE", ""),
     "index_name": os.getenv("INDEX_NAME", "personal-files"),
     "model_name": os.getenv("MODEL_NAME", "multilingual-e5-large"),

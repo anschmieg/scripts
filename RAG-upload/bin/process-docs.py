@@ -11,14 +11,10 @@ import sys
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from dotenv import load_dotenv
-
+# Remove redundant environment loading - it's already handled in config.py
 from rag_processor.core.config import CONFIG
 from rag_processor.core.logging_setup import setup_logging
 from rag_processor.processor.document_processor import process_documents
-
-# Force load environment variables from .env with priority over existing env vars
-load_dotenv(override=True)
 
 
 def main():
@@ -56,6 +52,27 @@ def main():
             type=str,
             help="Override target folder (default from .env)",
         )
+        # New performance options
+        parser.add_argument(
+            "--parallel",
+            "-p",
+            type=int,
+            default=3,
+            help="Number of concurrent upload workers (default: 3)",
+        )
+        parser.add_argument(
+            "--batch-size",
+            "-b",
+            type=int,
+            default=10,
+            help="Number of files to batch into a single request (default: 10)",
+        )
+        parser.add_argument(
+            "--progress",
+            action="store_true",
+            help="Show progress bar during processing (requires tqdm)",
+        )
+
         args = parser.parse_args()
 
         # Setup logging with the appropriate verbosity
@@ -85,12 +102,19 @@ def main():
         logger.debug(f"TARGET_FOLDER: {target_folder}")
         logger.debug(f"Namespace: {CONFIG['namespace']}")
         logger.debug(f"Index Name: {CONFIG['index_name']}")
+        logger.debug(f"Assistant Name: {CONFIG.get('assistant_name', 'default')}")
+        logger.debug(
+            f"Performance settings - Parallel workers: {args.parallel}, Batch size: {args.batch_size}"
+        )
 
         # Pass parameters to process_documents
         process_documents(
             target_folder=target_folder,
             dry_run=args.dry_run,
             recursive=not args.no_recursive,
+            parallel=args.parallel,
+            batch_size=args.batch_size,
+            show_progress=args.progress,
         )
     except Exception as e:
         logger.error(f"Unexpected error in document processing: {e}")

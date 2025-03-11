@@ -45,8 +45,16 @@ def check_file_changed(
     if filename not in processed_files:
         return True
 
-    current_hash = generate_file_hash(file_path)
-    return processed_files[filename].get("hash") != current_hash
+    # Check mod time first (very fast)
+    current_mtime = os.path.getmtime(file_path)
+    stored_mtime = processed_files[filename].get("mtime")
+
+    # Only hash if timestamp changed or is missing
+    if stored_mtime is None or abs(current_mtime - stored_mtime) > 0.001:
+        current_hash = generate_file_hash(file_path)
+        return processed_files[filename].get("hash") != current_hash
+
+    return False
 
 
 def update_processed_files_tracking(file_path, file_name, processed_files):
@@ -66,5 +74,6 @@ def update_processed_files_tracking(file_path, file_name, processed_files):
         "hash": generate_file_hash(file_path),
         "mtime": os.path.getmtime(file_path),
         "last_processed": datetime.now().isoformat(),
-        "sanitized_id": sanitized_id,  # Store the sanitized ID used in Pinecone
+        "sanitized_id": sanitized_id,  # Store the sanitized ID
+        "path": file_path,  # Store the full path for easier retrieval
     }

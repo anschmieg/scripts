@@ -2,13 +2,32 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
 .venv/
 venv/
-env/
 ENV/
 
 # Environment variables
 .env
+.env.local
 
 # Logs
 *.log
@@ -17,7 +36,7 @@ ENV/
 .cache/
 .pytest_cache/
 
-# IDE specific files
+# IDE files
 .idea/
 .vscode/
 *.swp
@@ -26,6 +45,11 @@ ENV/
 # OS specific files
 .DS_Store
 Thumbs.db
+
+# Application specific
+.cache/
+.tmp/
+logs/
 
 # Project specific
 deprecated/**

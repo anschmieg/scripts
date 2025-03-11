@@ -1,60 +1,72 @@
 #!/bin/bash
-# Helper script to run RAG Processor commands from the root directory
 
-# Ensure script is executable
-chmod +x bin/process-docs.py
-chmod +x bin/utils.py
-chmod +x tools/debugger.py
+set -e
 
-# Get the command and pass all arguments
-COMMAND=$1
-shift # Remove first argument (the command) from $@
+# Color codes
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
 
-case $COMMAND in
-process)
-  ./bin/process-docs.py "$@"
-  ;;
-upload)
-  ./bin/utils.py upload "$@"
-  ;;
-validate)
-  ./bin/utils.py validate "$@"
-  ;;
-debug)
-  ./tools/debugger.py "$@"
+# Directory where the script lives
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+
+# Setup virtual environment if it doesn't exist
+if [ ! -d .venv ]; then
+  echo -e "${YELLOW}Creating virtual environment...${NC}"
+  python3 -m venv .venv
+  source .venv/bin/activate
+  pip install --upgrade pip
+  pip install -r requirements.txt
+else
+  source .venv/bin/activate
+fi
+
+# Command dispatcher
+case "$1" in
+env)
+  echo -e "${GREEN}Testing environment setup...${NC}"
+  ./bin/test_assistant_sdk.py --check-sdk --verbose
   ;;
 list)
-  ./tools/debugger.py list "$@"
+  echo -e "${GREEN}Listing files...${NC}"
+  shift
+  ./bin/test_assistant_sdk.py --list --verbose $@
   ;;
-env)
-  ./tools/debugger.py env
+upload)
+  echo -e "${GREEN}Uploading file...${NC}"
+  shift
+  ./bin/utils.py upload $@
   ;;
-migrate)
-  python backward_compat.py
+validate)
+  echo -e "${GREEN}Validating files...${NC}"
+  shift
+  ./bin/utils.py validate $@
   ;;
-help | --help | -h)
-  echo "Usage: ./run.sh COMMAND [OPTIONS]"
+process)
+  echo -e "${GREEN}Processing documents...${NC}"
+  shift
+  ./bin/process-docs.py $@
+  ;;
+help)
+  echo "Usage: ./run.sh COMMAND [options]"
   echo ""
   echo "Commands:"
-  echo "  process   Process documents in target folder"
-  echo "  upload    Upload a specific file to Pinecone"
-  echo "  validate  Validate database against processed files tracking"
-  echo "  debug     Run debugging tools"
-  echo "  list      List documents in target folder"
-  echo "  env       Show environment variables"
-  echo "  migrate   Set up backward compatibility"
-  echo "  help      Show this help message"
+  echo "  env                  Test environment setup"
+  echo "  list                 List files (--files to show file paths)"
+  echo "  upload FILE          Upload a file"
+  echo "  validate             Validate file tracking"
+  echo "  process              Process documents"
+  echo "  help                 Show this help"
   echo ""
-  echo "Examples:"
-  echo "  ./run.sh process --dry-run -v              Process documents in dry-run mode with verbose output"
-  echo "  ./run.sh upload /path/to/document.pdf      Upload a specific document"
-  echo "  ./run.sh validate --reupload               Validate database and re-upload missing files"
-  echo "  ./run.sh list --files                      List files in target folder"
-  echo "  ./run.sh env                               Show environment debug information"
+  echo "Common options:"
+  echo "  --verbose            Show verbose output"
+  echo "  --dry-run            Don't actually upload files"
   ;;
 *)
-  echo "Unknown command: $COMMAND"
-  echo "Run './run.sh help' for usage information."
+  echo -e "${RED}Unknown command: $1${NC}"
+  echo "Run './run.sh help' for usage information"
   exit 1
   ;;
 esac

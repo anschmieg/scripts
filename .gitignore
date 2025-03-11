@@ -1,26 +1,15 @@
-Finanzguru_data*
-*/Finanzguru_data*
-*/*/Finanzguru_data*
+# Finanzguru data
 **/Finanzguru_data*
 
-__pycache__
-*/__pycache__*
-*/*/__pycache__*
+# Python cache
 **/__pycache__*
 
-.env
-.env.*
-*/.env
-*/.env.*
-**/.env
-**/.env.*
+# Environment files
+**/.env*
+!**/.env.template
 
-.DS_Store
-*/.DS_Store
-*/*/.DS_Store
+# System files
 **/.DS_Store
 
-.venv
-*/.venv
-*/*/.venv
+# Virtual environments
 **/.venv
