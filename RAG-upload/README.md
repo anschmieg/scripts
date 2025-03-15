@@ -14,6 +14,8 @@ This tool scans a directory for supported document types, processes them, and up
 - Preprocessing of large documents with file format conversion
 - Efficient caching to avoid reprocessing unchanged files
 - Integration with Pinecone Assistant API
+- Concurrent processing for high-performance uploads
+- Progress reporting and batch processing
 
 ## Directory Structure
 

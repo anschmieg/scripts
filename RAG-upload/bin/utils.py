@@ -13,14 +13,20 @@ from typing import List
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from dotenv import load_dotenv
-
 from rag_processor.core.config import CONFIG
-from rag_processor.core.logging_setup import setup_logging
+from rag_processor.core.env import load_environment_variables
+from rag_processor.core.logging_setup import (
+    check_config,
+    debug_environment,
+    setup_logging,
+)
+
+# Import the client module directly and use the appropriate class inside the functions
+from rag_processor.pinecone import client as pinecone_client
 from rag_processor.processor.document_processor import process_documents
 
 # Force load environment variables from .env with priority over existing env vars
-load_dotenv(override=True)
+load_environment_variables(override=True)
 
 # Get logger
 logger = logging.getLogger(__name__)
@@ -220,6 +226,139 @@ def validate_database(
             logger.info("All Pinecone Assistant files are tracked in JSON")
 
 
+def delete_files_from_assistant(file_ids, force=False, by_name=False):
+    """
+    Delete files from Pinecone Assistant by ID or name.
+
+    Args:
+        file_ids: List of file IDs or names to delete
+        force: If True, skip confirmation prompt
+        by_name: If True, delete files by name instead of ID
+    """
+    # Import here to avoid circular imports
+    from rag_processor.core.file_utils import load_processed_files, save_processed_files
+
+    # Look for the appropriate client class in the module
+    if hasattr(pinecone_client, "AssistantClient"):
+        client = pinecone_client.AssistantClient()
+    elif hasattr(pinecone_client, "PineconeAssistantClient"):
+        client = pinecone_client.PineconeAssistantClient()
+    else:
+        # Use whatever client class is available in the module
+        client_classes = [
+            cls
+            for cls in dir(pinecone_client)
+            if "client" in cls.lower() and not cls.startswith("_")
+        ]
+        if client_classes:
+            client_class = getattr(pinecone_client, client_classes[0])
+            client = client_class()
+            logger.info(f"Using client class: {client_classes[0]}")
+        else:
+            logger.error(
+                "Could not find an appropriate client class in the pinecone client module"
+            )
+            return
+
+    files_to_delete = []
+
+    # If deleting by name, get all files and filter by name
+    if by_name:
+        response = client.list_files()
+        if "error" in response:
+            logger.error(f"Failed to list files: {response['error']}")
+            return
+
+        all_files = response.get("files", [])
+
+        # Find files matching the names
+        for name_to_delete in file_ids:  # file_ids actually contains names in this case
+            matching_files = []
+
+            for file in all_files:
+                # Extract filename from file object or dict
+                filename = (
+                    file.get("filename")
+                    if isinstance(file, dict)
+                    else getattr(file, "filename", None)
+                )
+
+                if filename == name_to_delete:
+                    file_id = (
+                        file.get("id")
+                        if isinstance(file, dict)
+                        else getattr(file, "id", None)
+                    )
+                    if file_id:
+                        matching_files.append((file_id, filename))
+
+            if matching_files:
+                files_to_delete.extend(matching_files)
+                logger.info(
+                    f"Found {len(matching_files)} files matching name: {name_to_delete}"
+                )
+            else:
+                logger.warning(f"No files found with name: {name_to_delete}")
+    else:
+        # Use the provided IDs directly
+        for file_id in file_ids:
+            # Try to get the file details to confirm it exists
+            file_info = client.get_file(file_id)
+            if "error" in file_info:
+                logger.warning(f"File ID not found: {file_id}")
+                continue
+
+            filename = file_info.get("filename", "Unknown")
+            files_to_delete.append((file_id, filename))
+
+    # Confirm deletion unless forced
+    if files_to_delete:
+        logger.info(f"Found {len(files_to_delete)} files to delete:")
+        for file_id, filename in files_to_delete:
+            logger.info(f"  - {filename} (ID: {file_id})")
+
+        if not force:
+            confirm = input(f"Delete {len(files_to_delete)} files? (y/n): ")
+            if confirm.lower() != "y":
+                logger.info("Deletion cancelled")
+                return
+    else:
+        logger.warning("No files found to delete")
+        return
+
+    # Delete the files
+    deleted = 0
+    for file_id, filename in files_to_delete:
+        result = client.delete_file(file_id)
+
+        if "success" in result and result["success"]:
+            logger.info(f"Successfully deleted file: {filename} (ID: {file_id})")
+            deleted += 1
+        else:
+            error = result.get("error", "Unknown error")
+            logger.error(f"Failed to delete file {filename} (ID: {file_id}): {error}")
+
+    # Update tracking.json to remove deleted files
+    if deleted > 0:
+        processed_files = load_processed_files()
+        updated_processed_files = {}
+
+        # Create set of deleted file IDs for faster lookup
+        deleted_ids = {file_id for file_id, _ in files_to_delete}
+
+        # Keep only the entries that weren't deleted
+        for filepath, metadata in processed_files.items():
+            file_id = metadata.get("assistant_file_id")
+            if file_id not in deleted_ids:
+                updated_processed_files[filepath] = metadata
+
+        # Save the updated tracking data
+        save_processed_files(updated_processed_files)
+        logger.info(
+            f"Updated tracking.json, removed {len(processed_files) - len(updated_processed_files)} entries"
+        )
+
+
 def main():
     parser = argparse.ArgumentParser(description="Utility functions for RAG Processor")
 
@@ -255,20 +394,28 @@ def main():
         "--parallel",
         "-p",
         type=int,
-        default=3,
-        help="Number of concurrent upload workers (default: 3)",
+        default=5,  # Changed from 3 to 5
+        help="Number of concurrent upload workers (default: 5)",
     )
     process_parser.add_argument(
         "--batch-size",
         "-b",
         type=int,
-        default=10,
-        help="Number of files to batch into a single request (default: 10)",
+        default=20,  # Changed from 10 to 20
+        help="Number of files to batch into a single request (default: 20)",
     )
     process_parser.add_argument(
         "--progress",
         action="store_true",
+        default=True,  # Added default=True
         help="Show progress bar during processing (requires tqdm)",
+    )
+    # Add no-progress option to disable progress bar if needed
+    process_parser.add_argument(
+        "--no-progress",
+        action="store_false",
+        dest="progress",
+        help="Disable progress bar",
     )
 
     # Upload command
@@ -291,20 +438,44 @@ def main():
         "--parallel",
         "-p",
         type=int,
-        default=3,
-        help="Number of concurrent upload workers (default: 3)",
+        default=5,  # Changed from 3 to 5
+        help="Number of concurrent upload workers (default: 5)",
     )
     upload_parser.add_argument(
         "--batch-size",
         "-b",
         type=int,
-        default=10,
-        help="Number of files to batch into a single request (default: 10)",
+        default=20,  # Changed from 10 to 20
+        help="Number of files to batch into a single request (default: 20)",
     )
     upload_parser.add_argument(
         "--progress",
         action="store_true",
+        default=True,  # Added default=True
         help="Show progress bar during processing (requires tqdm)",
+    )
+    # Add no-progress option to disable progress bar if needed
+    upload_parser.add_argument(
+        "--no-progress",
+        action="store_false",
+        dest="progress",
+        help="Disable progress bar",
+    )
+
+    # Delete command
+    delete_parser = subparsers.add_parser(
+        "delete", help="Delete files from Pinecone Assistant"
+    )
+    delete_parser.add_argument(
+        "file_ids", nargs="+", help="IDs of files to delete from Pinecone Assistant"
+    )
+    delete_parser.add_argument(
+        "--force", action="store_true", help="Skip confirmation prompt"
+    )
+    delete_parser.add_argument(
+        "--by-name",
+        action="store_true",
+        help="Delete files by name instead of ID (will delete all matching names)",
     )
 
     # Validate command
@@ -353,9 +524,7 @@ def main():
 
     # Handle debug environment request
     if args.debug_env:
-        # Import here to avoid circular imports
-        from tools.debugger import check_config, debug_environment
-
+        # Import directly from logging_setup instead of tools.debugger
         debug_environment()
         check_config()
         return
@@ -424,6 +593,10 @@ def main():
             check_disk=args.check_disk,
             clean=args.clean,
             check_untracked=args.check_untracked,
+        )
+    elif args.command == "delete":
+        delete_files_from_assistant(
+            args.file_ids, force=args.force, by_name=args.by_name
         )
     else:
         # If no command specified, show help

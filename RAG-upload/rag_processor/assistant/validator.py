@@ -16,7 +16,6 @@ from rag_processor.pinecone.uploader import upload_file_to_assistant
 def get_assistant_file_ids() -> Set[str]:
     """
     Retrieve all file IDs from Pinecone Assistant.
-    Uses pagination to handle large collections.
 
     Returns:
         Set of file IDs in Pinecone Assistant
@@ -25,49 +24,30 @@ def get_assistant_file_ids() -> Set[str]:
         client = PineconeAssistantClient()
         all_files = set()
 
-        # Initial request
-        response = client.list_files(limit=100, offset=0)
+        # Use the compatibility wrapper without parameters
+        response = client.list_files()
 
-        if "error" in response:
+        if isinstance(response, dict) and "error" in response:
             logger.error(
                 f"Failed to fetch files from Pinecone Assistant: {response['error']}"
             )
             return set()
 
-        files = response.get("files", [])
-        total = response.get("total", 0)
+        # Handle different response formats
+        files = []
+        if isinstance(response, dict) and "files" in response:
+            files = response["files"]
+        elif isinstance(response, list):
+            files = response
+        elif hasattr(response, "files"):
+            files = response.files
 
-        # Add IDs from the first batch
+        # Add IDs from the files list
         for file in files:
-            file_id = (
-                file.get("id") if isinstance(file, dict) else getattr(file, "id", None)
-            )
-            if file_id:
-                all_files.add(file_id)
-
-        # If there are more files to fetch
-        offset = len(files)
-        while offset < total:
-            response = client.list_files(limit=100, offset=offset)
-
-            if "error" in response:
-                logger.error(f"Failed to fetch additional files: {response['error']}")
-                break
-
-            additional_files = response.get("files", [])
-            if not additional_files:
-                break
-
-            for file in additional_files:
-                file_id = (
-                    file.get("id")
-                    if isinstance(file, dict)
-                    else getattr(file, "id", None)
-                )
-                if file_id:
-                    all_files.add(file_id)
-
-            offset += len(additional_files)
+            if isinstance(file, dict) and "id" in file:
+                all_files.add(file["id"])
+            elif hasattr(file, "id"):
+                all_files.add(file.id)
 
         logger.debug(f"Found {len(all_files)} files in Pinecone Assistant")
         return all_files
@@ -197,13 +177,41 @@ def find_untracked_assistant_files() -> Dict[str, Dict]:
     try:
         # Get all files from Assistant
         client = PineconeAssistantClient()
-        response = client.list_files(limit=1000)  # Set a reasonable limit
+        response = client.list_files()  # Use the parameterless version
 
-        if "error" in response:
-            logger.error(f"Failed to list files: {response['error']}")
+        # Handle different response formats
+        files_list = []
+        if isinstance(response, dict) and "files" in response:
+            files_list = response["files"]
+        elif isinstance(response, list):
+            files_list = response
+        elif hasattr(response, "files"):
+            files_list = response.files
+
+        if not files_list:
+            if isinstance(response, dict) and "error" in response:
+                logger.error(f"Failed to list files: {response['error']}")
             return {}
 
-        assistant_files = {file["id"]: file for file in response.get("files", [])}
+        # Convert to dictionary by ID
+        assistant_files = {}
+        for file in files_list:
+            # Handle both dict and object formats
+            if isinstance(file, dict):
+                file_id = file.get("id")
+                assistant_files[file_id] = file
+            else:
+                file_id = getattr(file, "id", None)
+                if file_id:
+                    # Convert object to dict
+                    assistant_files[file_id] = {
+                        "id": file_id,
+                        "name": getattr(
+                            file, "filename", getattr(file, "name", file_id)
+                        ),
+                        "size": getattr(file, "size", None),
+                        "created_at": getattr(file, "created_at", None),
+                    }
 
         # Load processed files tracking data
         processed_files = load_processed_files()

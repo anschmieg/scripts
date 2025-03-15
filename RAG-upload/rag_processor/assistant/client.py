@@ -3,7 +3,7 @@ Pinecone Assistant API client using the official SDK
 """
 
 import os
-from typing import Dict, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from pinecone import Pinecone
 
@@ -44,6 +44,46 @@ class PineconeAssistantClient:
             logger.error(f"Failed to initialize Pinecone Assistant client: {e}")
             raise
 
+    def get_assistant(self):
+        """Get or create the assistant object if not already initialized"""
+        if self.assistant is not None:
+            return self.assistant
+
+        try:
+            # First try to get the assistant with the configured name
+            if self.assistant_name:
+                self.assistant = self.pc.assistant.Assistant(
+                    assistant_name=self.assistant_name
+                )
+                return self.assistant
+
+            # Try to use a default assistant
+            try:
+                default_name = "default"
+                self.assistant = self.pc.assistant.Assistant(
+                    assistant_name=default_name
+                )
+                self.assistant_name = default_name
+                return self.assistant
+            except Exception:
+                # Get the first available assistant
+                assistants = self.pc.assistant.list_assistants()
+                if assistants:
+                    self.assistant = self.pc.assistant.Assistant(
+                        assistant_name=assistants[0].name
+                    )
+                    self.assistant_name = assistants[0].name
+                    return self.assistant
+
+                # As a last resort, create a default assistant
+                self.assistant = self.pc.assistant.Assistant.create(name="default")
+                self.assistant_name = "default"
+                return self.assistant
+
+        except Exception as e:
+            logger.error(f"Failed to get or create assistant: {e}")
+            return None
+
     def upload_file(self, file_path: str, metadata: Optional[Dict] = None) -> Dict:
         """Upload a file to Pinecone Assistant."""
         try:
@@ -53,37 +93,18 @@ class PineconeAssistantClient:
             # Note: We're not reinitializing self.pc here as it was already done in __init__
 
             # Check if we have an assistant name
-            if self.assistant:
-                logger.debug(
-                    f"Uploading file {file_path} to assistant: {self.assistant_name}"
-                )
-                response = self.assistant.upload_file(
-                    file_path=file_path, metadata=metadata
-                )
-            else:
-                # No assistant name provided - create one with a default name
-                logger.info(
-                    "No specific assistant_name provided, using 'default' assistant"
-                )
-                default_name = "default"
-                try:
-                    default_assistant = self.pc.assistant.Assistant(
-                        assistant_name=default_name
-                    )
-                    logger.debug(f"Using assistant with name: {default_name}")
-                    response = default_assistant.upload_file(
-                        file_path=file_path, metadata=metadata
-                    )
-                except Exception as e:
-                    # If default assistant doesn't exist, create it
-                    logger.warning(f"Error with default assistant: {e}")
-                    logger.info("Creating new assistant named 'default'")
-                    default_assistant = self.pc.assistant.Assistant.create(
-                        name=default_name
-                    )
-                    response = default_assistant.upload_file(
-                        file_path=file_path, metadata=metadata
-                    )
+            if not self.assistant:
+                self.get_assistant()
+
+            if not self.assistant:
+                return {"error": "Could not get assistant for upload"}
+
+            logger.debug(
+                f"Uploading file {file_path} to assistant: {self.assistant_name}"
+            )
+            response = self.assistant.upload_file(
+                file_path=file_path, metadata=metadata
+            )
 
             # Convert response to dict if necessary
             return self._convert_response_to_dict(response)
@@ -103,65 +124,75 @@ class PineconeAssistantClient:
             Dict: File information
         """
         try:
-            if self.assistant:
-                response = self.assistant.get_file(file_id=file_id)
-            else:
-                # Try different approaches based on SDK version
-                try:
-                    response = self.pc.assistant.get_file(file_id=file_id)
-                except AttributeError:
-                    default_assistant = self.pc.assistant.Assistant()
-                    response = default_assistant.get_file(file_id=file_id)
+            if not self.assistant:
+                self.get_assistant()
 
+            if not self.assistant:
+                return {"error": "Could not get assistant"}
+
+            response = self.assistant.get_file(file_id=file_id)
             return self._convert_response_to_dict(response)
         except Exception as e:
             logger.error(f"Error retrieving file from Pinecone Assistant: {e}")
             return {"error": str(e)}
 
-    def list_files(self, limit: int = 100, offset: int = 0) -> Dict:
+    def list_files(self) -> Dict[str, Union[List[Dict[str, Any]], str]]:
         """
-        List files in Pinecone Assistant.
-
-        Args:
-            limit: Maximum number of files to return
-            offset: Pagination offset
+        List files in Pinecone Assistant using the most compatible approach.
 
         Returns:
-            Dict: List of files
+            Dict with 'files' key containing list of files
         """
         try:
-            # Simplified logic with clear fallback paths
-            if self.assistant:
-                # Try accessing methods in order of likelihood
-                try:
-                    response = self.assistant.list_files(limit=limit, offset=offset)
-                    return self._convert_response_to_dict(response)
-                except AttributeError:
-                    # Try files attribute
-                    files = getattr(self.assistant, "files", None)
-                    if files is not None:
-                        return {"files": files, "total": len(files)}
+            if not self.assistant:
+                self.get_assistant()
 
-            # Try on the pc.assistant directly
+            if not self.assistant:
+                return {"error": "Could not get assistant", "files": []}
+
+            # First try to directly access the files attribute
+            files_attr = getattr(self.assistant, "files", None)
+            if files_attr is not None and isinstance(files_attr, list):
+                logger.debug(f"Got files attribute with {len(files_attr)} files")
+                return {
+                    "files": [self._convert_response_to_dict(f) for f in files_attr]
+                }
+
+            # Second, try to call list_files() without parameters
             try:
-                response = self.pc.assistant.list_files(limit=limit, offset=offset)
-                return self._convert_response_to_dict(response)
-            except AttributeError:
-                # Fall back to creating a default assistant for listing
-                default_assistant = self.pc.assistant.Assistant()
-                try:
-                    files = default_assistant.files
-                    if isinstance(files, list):
-                        return {"files": files, "total": len(files)}
-                    else:
-                        return self._convert_response_to_dict(files)
-                except Exception as inner_e:
-                    logger.error(f"Error accessing files attribute: {inner_e}")
-                    return {"error": str(inner_e), "files": [], "total": 0}
+                response = self.assistant.list_files()
+                if response is not None:
+                    # Handle different response formats
+                    if hasattr(response, "files"):
+                        files = response.files
+                        if files is not None:
+                            return {
+                                "files": [
+                                    self._convert_response_to_dict(f) for f in files
+                                ]
+                            }
+                    elif isinstance(response, list):
+                        return {
+                            "files": [
+                                self._convert_response_to_dict(f) for f in response
+                            ]
+                        }
+                    elif isinstance(response, dict) and "files" in response:
+                        return response
+
+                    # Fall back to returning the response directly
+                    return {"files": [self._convert_response_to_dict(response)]}
+            except Exception as e:
+                logger.debug(f"Error calling list_files(): {e}")
+                pass
+
+            # If we get here, all attempts failed
+            logger.warning("Failed to list files using all known methods")
+            return {"error": "Failed to list files", "files": []}
 
         except Exception as e:
-            logger.error(f"Error listing files from Pinecone Assistant: {e}")
-            return {"error": str(e), "files": [], "total": 0}
+            logger.error(f"Error listing files: {e}")
+            return {"error": str(e), "files": []}
 
     def delete_file(self, file_id: str) -> Dict:
         """
@@ -174,15 +205,13 @@ class PineconeAssistantClient:
             Dict: Response from the API
         """
         try:
-            if self.assistant and self.assistant_name:
-                self.assistant.delete_file(file_id=file_id)
-            else:
-                try:
-                    self.pc.assistant.delete_file(file_id=file_id)
-                except AttributeError:
-                    default_assistant = self.pc.assistant.Assistant()
-                    default_assistant.delete_file(file_id=file_id)
+            if not self.assistant:
+                self.get_assistant()
 
+            if not self.assistant:
+                return {"error": "Could not get assistant"}
+
+            self.assistant.delete_file(file_id=file_id)
             return {"success": True}
         except Exception as e:
             logger.error(f"Error deleting file from Pinecone Assistant: {e}")

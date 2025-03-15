@@ -176,33 +176,25 @@ def upload_file(
     use_assistant: Optional[bool] = None,
 ) -> Union[Dict, bool]:
     """
-    Upload a file to either Pinecone Assistant or Vector DB based on configuration.
+    Upload a file using either Assistant API or Vector DB.
 
     Args:
         file_path: Path to the file to upload
-        index: Pinecone index (for Vector DB only)
-        namespace: Namespace (for Vector DB only)
-        use_assistant: Override config setting for which API to use
+        index: Pinecone index (only needed for Vector DB)
+        namespace: Namespace for Vector DB
+        use_assistant: Override config setting
 
     Returns:
-        Union[Dict, bool]: Response from the appropriate API
+        Dict or bool: Assistant response or success status
     """
     # Determine which API to use
-    should_use_assistant = (
-        use_assistant
-        if use_assistant is not None
-        else CONFIG.get("use_assistant_api", True)
-    )
+    if use_assistant is None:
+        use_assistant = CONFIG.get("use_assistant_api", False)
 
-    if should_use_assistant:
-        logger.debug(f"Using Pinecone Assistant API for {os.path.basename(file_path)}")
+    # Use the appropriate upload method
+    if use_assistant:
         return upload_file_to_assistant(file_path)
     else:
-        logger.debug(f"Using Pinecone Vector DB for {os.path.basename(file_path)}")
-        if index is None:
-            from rag_processor.pinecone.client import get_pinecone_index
-
-            index = get_pinecone_index()
         return upload_file_to_vector_db(file_path, index, namespace)
 
 
@@ -211,9 +203,9 @@ def upload_files(
     index=None,
     namespace: str = "",
     use_assistant: Optional[bool] = None,
-    parallel: int = 3,
-    batch_size: int = 10,
-    show_progress: bool = False,
+    parallel: int = 5,  # Changed from 3 to 5
+    batch_size: int = 20,  # Changed from 10 to 20
+    show_progress: bool = True,  # Changed default to True
 ) -> Dict[str, Union[Dict, bool]]:
     """
     Upload multiple files with optimized performance.

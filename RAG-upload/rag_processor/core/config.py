@@ -4,12 +4,11 @@ Configuration management for RAG Processor
 
 import os
 
-from dotenv import load_dotenv
-
-# Remove redundant code - we only need one load_dotenv call
+# Use the environment loading function from env.py instead of direct import
+from rag_processor.core.env import load_environment_variables
 
 # Load environment variables from .env file WITH override
-load_dotenv(override=True)
+load_environment_variables(override=True)
 
 # Handle $HOME or ~/ expansions in TARGET_FOLDER
 target_folder = os.getenv("TARGET_FOLDER", "~/Nextcloud/Documents")

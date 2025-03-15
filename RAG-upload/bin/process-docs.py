@@ -13,8 +13,11 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 
 # Remove redundant environment loading - it's already handled in config.py
 from rag_processor.core.config import CONFIG
-from rag_processor.core.logging_setup import setup_logging
-from rag_processor.processor.document_processor import process_documents
+from rag_processor.core.logging_setup import (
+    check_config,
+    debug_environment,
+    setup_logging,
+)
 
 
 def main():
@@ -57,20 +60,28 @@ def main():
             "--parallel",
             "-p",
             type=int,
-            default=3,
-            help="Number of concurrent upload workers (default: 3)",
+            default=5,  # Changed from 3 to 5
+            help="Number of concurrent upload workers (default: 5)",
         )
         parser.add_argument(
             "--batch-size",
             "-b",
             type=int,
-            default=10,
-            help="Number of files to batch into a single request (default: 10)",
+            default=20,  # Changed from 10 to 20
+            help="Number of files to batch into a single request (default: 20)",
         )
         parser.add_argument(
             "--progress",
             action="store_true",
+            default=True,  # Added default=True
             help="Show progress bar during processing (requires tqdm)",
+        )
+        # Add no-progress option to disable progress bar if needed
+        parser.add_argument(
+            "--no-progress",
+            action="store_false",
+            dest="progress",
+            help="Disable progress bar",
         )
 
         args = parser.parse_args()
@@ -89,9 +100,7 @@ def main():
 
         # Print environment debug info if requested
         if args.debug_env:
-            # Import here to avoid circular imports
-            from tools.debugger import check_config, debug_environment
-
+            # Import directly from logging_setup instead of tools.debugger
             debug_environment()
             check_config()
             return
@@ -106,6 +115,9 @@ def main():
         logger.debug(
             f"Performance settings - Parallel workers: {args.parallel}, Batch size: {args.batch_size}"
         )
+
+        # Import here to avoid circular imports
+        from rag_processor.processor.document_processor import process_documents
 
         # Pass parameters to process_documents
         process_documents(

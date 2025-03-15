@@ -7,15 +7,24 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+# Define project root once at module level to avoid repeated calculations
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 
-def load_environment_variables():
-    """Load environment variables from .env file"""
-    # Find project root (where .env should be located)
-    project_root = Path(__file__).resolve().parent.parent.parent
-    dotenv_path = project_root / ".env"
+
+def load_environment_variables(override=False):
+    """
+    Load environment variables from .env file
+
+    Args:
+        override: If True, override existing environment variables
+
+    Returns:
+        bool: True if .env was found and loaded, False otherwise
+    """
+    dotenv_path = PROJECT_ROOT / ".env"
 
     if dotenv_path.exists():
-        load_dotenv(dotenv_path)
+        load_dotenv(dotenv_path, override=override)
         return True
     else:
         return False
@@ -35,4 +44,4 @@ def expand_path(path):
 
 def get_project_root():
     """Get project root directory"""
-    return Path(__file__).resolve().parent.parent.parent
+    return PROJECT_ROOT

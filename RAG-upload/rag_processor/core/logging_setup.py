@@ -7,10 +7,11 @@ import os
 import sys
 from pathlib import Path
 
-from dotenv import load_dotenv
+# Use the environment loading function from env.py instead of direct import
+from rag_processor.core.env import load_environment_variables
 
 # Load environment variables from .env file
-load_dotenv(override=True)
+load_environment_variables(override=True)
 
 # Configure logging
 logging.basicConfig(
@@ -62,7 +63,7 @@ def debug_environment():
         print(f"TARGET_FOLDER before .env reload: {original_target_folder}")
 
         # Reload .env file to ensure it has priority
-        load_dotenv(override=True)
+        load_environment_variables(override=True)
         print("Reloaded .env file with override=True")
     else:
         print(f"WARNING: .env file NOT found at {dotenv_path.absolute()}")

@@ -12,6 +12,7 @@
         <string>source $HOME/Projects/scripts/RAG-upload/.venv/bin/activate && python $HOME/Projects/scripts/RAG-upload/bin/process-docs.py</string>
         <!-- For testing with dry run mode, uncomment the line below and comment the line above -->
         <!-- <string>source $HOME/Projects/scripts/RAG-upload/.venv/bin/activate && python $HOME/Projects/scripts/RAG-upload/bin/process-docs.py --dry-run</string> -->
+        <!-- Using Vector DB mode is now the default -->
     </array>
     
     <key>StartInterval</key>

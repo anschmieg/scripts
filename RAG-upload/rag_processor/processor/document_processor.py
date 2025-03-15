@@ -21,7 +21,7 @@ from rag_processor.pinecone.uploader import upload_files
 def get_pinecone_index():
     """Initialize and return the Pinecone index."""
     # Only needed when using Vector DB mode
-    if CONFIG.get("use_assistant_api", True):
+    if CONFIG.get("use_assistant_api", False):
         return None
 
     try:
@@ -54,6 +54,16 @@ def find_processable_files(folder_path: str, recursive: bool = True) -> List[str
     all_files = []
 
     try:
+        # Check if the path is a file (not a directory)
+        if os.path.isfile(folder_path):
+            # If it's a single file with supported extension
+            if any(folder_path.lower().endswith(ext) for ext in SUPPORTED_EXTENSIONS):
+                return [folder_path]
+            else:
+                logger.warning(f"Unsupported file format: {folder_path}")
+                return []
+
+        # Original directory scanning logic
         if recursive:
             for root, _, files in os.walk(folder_path):
                 for file in files:
@@ -79,9 +89,9 @@ def process_documents(
     target_folder: str,
     dry_run: bool = False,
     recursive: bool = True,
-    parallel: int = 3,
-    batch_size: int = 10,
-    show_progress: bool = False,
+    parallel: int = 5,  # Increased from 3 to 5 by default
+    batch_size: int = 20,  # Increased from 10 to 20 by default
+    show_progress: bool = True,  # Changed default to True
 ) -> Tuple[int, int]:
     """Process and upload documents to Pinecone."""
     start_time = time.time()
