@@ -1,6 +1,6 @@
-# Go Application
+# GitHub Copilot Client for Go
 
-This is a simple Go application structured for future functionality extensions. 
+A Go application that enables you to use the GitHub Copilot Chat API like any other OpenAI-compatible model. This client integrates with your local GitHub Copilot configuration to provide AI completions through a convenient API.
 
 ## Project Structure
 
@@ -30,12 +30,14 @@ go-app
 ### Installation
 
 1. Clone the repository:
+   
    ```
    git clone <repository-url>
    cd go-app
    ```
 
 2. Install dependencies:
+   
    ```
    go mod tidy
    ```
@@ -51,6 +53,22 @@ go run cmd/main.go
 ### Usage
 
 Once the application is running, you can access it at `http://localhost:8080`. 
+
+### Documentation
+
+This project follows Go's conventions for documentation. To generate and view documentation for the codebase, use the following command:
+
+```
+go doc
+```
+
+You can also use `godoc` to serve documentation locally:
+
+```
+godoc -http=:6060
+```
+
+Visit `http://localhost:6060` in your browser to view the documentation.
 
 ### Contributing
 

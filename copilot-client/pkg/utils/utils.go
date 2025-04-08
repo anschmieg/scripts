@@ -11,12 +11,37 @@ import (
 const CopilotChatCompletionURL = "https://api.githubcopilot.com/chat/completions"
 
 // SomeUtilityFunction performs a specific utility task.
+// It simply wraps the input string with a "Processed:" prefix.
+// This is a placeholder function for demonstration purposes.
+//
+// Parameters:
+//   - input: The string to process
+//
+// Returns the processed string.
 func SomeUtilityFunction(input string) string {
 	// Implement the utility logic here
 	return "Processed: " + input
 }
 
 // CallOpenAIEndpoint sends a request to the OpenAI endpoint and returns the response.
+// This function uses the GitHub Copilot endpoint but formats the request and response
+// in a way that's compatible with OpenAI's API structure.
+//
+// Parameters:
+//   - apiKey: The API key to use for authentication
+//   - payload: The request payload (must include "model" and "messages" fields)
+//
+// Returns a map containing the response data or an error if the request failed.
+//
+// Example:
+//
+//	payload := map[string]interface{}{
+//	    "model": "copilot-chat",
+//	    "messages": []map[string]interface{}{
+//	        {"role": "user", "content": "Hello, how are you?"},
+//	    },
+//	}
+//	response, err := CallOpenAIEndpoint(apiKey, payload)
 func CallOpenAIEndpoint(apiKey string, payload map[string]interface{}) (map[string]interface{}, error) {
 	// Ensure payload adheres to OpenAI schema
 	if _, ok := payload["model"]; !ok {
@@ -85,4 +110,49 @@ func CallOpenAIEndpoint(apiKey string, payload map[string]interface{}) (map[stri
 	}
 
 	return responseMap, nil
+}
+
+// CallCopilotEndpoint sends a request to the GitHub Copilot endpoint using the locally stored token.
+// This is a convenience wrapper around CallOpenAIEndpoint that automatically fetches and uses
+// the local Copilot token.
+//
+// Parameters:
+//   - payload: The request payload (must include "model" and "messages" fields)
+//
+// Returns a map containing the response data or an error if the request failed.
+func CallCopilotEndpoint(payload map[string]interface{}) (map[string]interface{}, error) {
+	apiKey, err := GetCopilotToken()
+	if err != nil {
+		return nil, errors.New("failed to get Copilot token: " + err.Error())
+	}
+
+	return CallOpenAIEndpoint(apiKey, payload)
+}
+
+// CallAPIWithBody makes an API call with a JSON body and returns the raw response.
+// This is a lower-level function that gives more control over the request and response.
+//
+// Parameters:
+//   - url: The API endpoint URL
+//   - contentType: The content type header value (e.g., "application/json")
+//   - apiKey: The API key to use for authentication
+//   - payload: The request payload (will be JSON-serialized)
+//
+// Returns the HTTP response or an error if the request failed.
+func CallAPIWithBody(url string, contentType string, apiKey string, payload interface{}) (*http.Response, error) {
+	body, err := json.Marshal(payload)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(body))
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Authorization", "Bearer "+apiKey)
+	req.Header.Set("Content-Type", contentType)
+
+	client := &http.Client{}
+	return client.Do(req)
 }
