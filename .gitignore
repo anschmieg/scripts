@@ -1,3 +1,4 @@
+
 # Finanzguru data
 **/Finanzguru_data*
 
@@ -13,3 +14,13 @@
 
 # Virtual environments
 **/.venv
+=======
+.venv
+.venv/*
+.DS_Store
+__pychache__
+
+**/.venv
+**/.venv/*
+**/.DS_Store
+**/__pycache__
