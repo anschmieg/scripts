@@ -54,3 +54,13 @@ logs/
 # Project specific
 deprecated/**
 deprecated/*
+=======
+.venv
+.venv/*
+.DS_Store
+__pychache__
+
+**/.venv
+**/.venv/*
+**/.DS_Store
+**/__pycache__
