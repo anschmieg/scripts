@@ -1,0 +1,1 @@
+/Users/adrian/.local/share/chezmoi/Projects/scripts/set-mac-apps-language.sh
