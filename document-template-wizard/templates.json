@@ -1,0 +1,2152 @@
+[
+  {
+    "system": "typst",
+    "name": "@preview/aero-check",
+    "description": "Checklist template with aviation-inspired design. Ideal for pilots, flight instructors, and aviation enthusiasts. Supports task tracking, safety checks, and operational procedures."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/bamdone-rebuttal",
+    "description": "Peer review rebuttal letter template. Structured for point-by-point responses to reviewer feedback. Suitable for academic journal submissions and conference proceedings."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/basic-resume",
+    "description": "Standard resume template optimized for Applicant Tracking Systems (ATS). Clean, professional layout for job applications in any industry."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/charged-ieee",
+    "description": "IEEE-style conference and journal paper template. Designed for electrical engineering, computer science, and technical research publications. Supports figures, citations, and structured sections."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/classy-german-invoice",
+    "description": "Minimalist invoice template for German freelancers. Professional layout, compliant with German business standards. Suitable for billing, client invoicing, and financial documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/clear-iclr",
+    "description": "ICLR conference paper template. Structured for machine learning research submissions, including abstract, methodology, results, and references."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/cram-snap",
+    "description": "Cheatsheet template for quick reference guides. Ideal for students, exam preparation, and technical summaries. Supports compact, organized information display."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/dashing-dept-news",
+    "description": "Department news template with bold graphic design and modern layout. Suitable for newsletters, announcements, and internal communications."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/diatypst",
+    "description": "Presentation slide template with sensible defaults and easy syntax. Well-styled for academic, business, or educational presentations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/elsearticle",
+    "description": "Elsevier article template converted from LaTeX elsearticle.cls. Suitable for scientific journal submissions and research articles."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/fireside",
+    "description": "Warm, friendly letter template for personal or informal correspondence. Suitable for thank you notes, invitations, and heartfelt messages."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/graceful-genetics",
+    "description": "Academic paper template for genetics research. Designed for journal and conference submissions, supporting figures, citations, and structured sections."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/grape-suite",
+    "description": "Suite of templates for exams, seminar papers, homework assignments, and academic exercises. Organized layouts for educational use."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/ilm",
+    "description": "Minimalist, clean, simple template for non-fiction writing. Versatile for class notes, academic reports, and book manuscripts. Clean, readable formatting."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/minimalbc",
+    "description": "Minimalist, clean, simple business card template. Sleek design emphasizing clarity and elegance. Suitable for professionals, freelancers, and entrepreneurs."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/red-agora",
+    "description": "Report template for ENSIAS projects and internships. Quick scaffolding for academic and professional documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/splendid-mdpi",
+    "description": "MDPI-style paper template for conference and journal publications. Supports scientific research, figures, and references."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/springer-spaniel",
+    "description": "Springer Contributed Chapter template recreation. Suitable for book chapters, academic compilations, and edited volumes."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/unequivocal-ams",
+    "description": "AMS-style paper template for mathematics conferences and journals. Structured for proofs, theorems, and mathematical research."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/abiding-ifacconf",
+    "description": "IFAC-style conference paper template for automatic control research. Suitable for technical papers, figures, and references."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/academic-conf-pre",
+    "description": "Slide theme for academic presentations in Australia. Modern, professional design for lectures, seminars, and conferences."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/academicv",
+    "description": "Clean, flexible CV template using Typst and YAML. Customizable for academic, research, and professional profiles."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/accelerated-jacow",
+    "description": "Conference proceedings paper template for accelerator physics. Structured for technical research, figures, and references."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/adaptable-pset",
+    "description": "Flexible problem set template for technical courses. Supports exercises, solutions, and grading. Ideal for STEM education."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/aero-navigator",
+    "description": "Navigation log template for cross-country pilots. Succinct format for flight planning, route tracking, and aviation record keeping."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/agregyst",
+    "description": "Aggregation template for writing teaching lessons. Structured for lesson plans, educational objectives, and classroom activities."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/ailab-isetbz",
+    "description": "Lab report template for engineering students at ISET Bizerte. Supports experiment documentation, results, and analysis."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/aio-studi-and-thesis",
+    "description": "All-in-one template for student projects and theses. Versatile for academic research, coursework, and dissertation writing."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/almost-tud-letter",
+    "description": "Letter template closely replicating TUDelft style. Suitable for academic, business, and formal correspondence."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/aloecius-aip",
+    "description": "Draft template for reproducing AIP Journal of Chemical Physics papers. Structured for scientific research and publication."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/amsterdammetje-article",
+    "description": "Computer Science article template for University of Amsterdam. Academic formatting for research papers and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/anr-aapg-fanmade",
+    "description": "Grant proposal templates for ANR AAPG, French National Research Agency. Structured for funding applications and research plans."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/apa7-ish",
+    "description": "Manuscript template mostly compliant with APA7 style. Suitable for psychology, social sciences, and academic research papers."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/appreciated-letter",
+    "description": "Letter template for business associates and friends. Suitable for formal and informal mail correspondence."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/arkheion",
+    "description": "Simple template reproducing popular arXiv styles. Ideal for preprints, research articles, and academic publishing."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/articulate-coderscompass",
+    "description": "Template for articulate technical documentation and code guides. Suitable for developer handbooks and project documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/athena-tu-darmstadt-exercise",
+    "description": "Exercise template for TU Darmstadt. Structured for academic assignments, problem sets, and coursework."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/athena-tu-darmstadt-thesis",
+    "description": "Thesis template for TU Darmstadt. Academic formatting for bachelor's, master's, and doctoral dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/badformer",
+    "description": "Retro-gaming themed template in Typst. Suitable for game documentation, mission tracking, and playful projects."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/bamdone-aiaa",
+    "description": "AIAA conference paper template for aeronautics and astronautics research. Structured for technical papers, figures, and references."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/bamdone-ieeeconf",
+    "description": "IEEE-style paper template for conferences and journals in electrical engineering, computer science, and technical research. Structured for figures, citations, and formal sections."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/barcala",
+    "description": "Engineering report template for UNLP students. Academic formatting for technical documentation, lab reports, and project summaries."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/basic-document-props",
+    "description": "Simple document template with header, footer, page numbering, and address fields. Suitable for letters, reports, and formal documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/basic-polylux",
+    "description": "Starter template for Polylux presentations. Clean layout for academic, business, or educational slides."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/basic-report",
+    "description": "Simple report template for academic, business, or technical documentation. Supports structured sections and clear formatting."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/beautiful-abs",
+    "description": "Abbreviation package for creating beautiful standard abbreviations (e.g., i.e., etc.). Enhances clarity and professionalism in documents."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/bei-report",
+    "description": "Unofficial internship report template for ENSIMAG. Academic formatting for technical projects and research documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/bellbird-udesc-paper",
+    "description": "UDESC-style academic paper template. Suitable for research articles, conference submissions, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/blind-cvpr",
+    "description": "CVPR-style paper template for Computer Vision and Pattern Recognition conferences. Structured for research, figures, and references."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/bloated-neurips",
+    "description": "NeurIPS-style paper template for Neural Information Processing Systems conferences. Suitable for machine learning research, figures, and citations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/bone-resume",
+    "description": "Colorful resume template designed for Chinese professionals. Customizable layout for job applications and academic profiles."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/bookly",
+    "description": "Book template for Typst. Suitable for fiction, non-fiction, and academic publishing. Supports chapters, sections, and custom formatting."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/boxed-sheet",
+    "description": "Organized cheatsheet template with colored bounding boxes and line titles. Ideal for daily notes, study guides, and quick references."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/brilliant-cv",
+    "description": "Professional CV template powered by Typst. Modern design for job applications, academic profiles, and career advancement."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/bubble",
+    "description": "Simple, colorful document template for Typst. Suitable for creative projects, personal notes, and informal reports."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/bubble-zju",
+    "description": "Modern report template for Zhejiang University. Academic formatting for research, coursework, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/bye-ubc",
+    "description": "Thesis template for University of British Columbia. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/caidan",
+    "description": "Clean, minimal food menu template. Suitable for restaurants, cafes, and catering businesses. Customizable for daily specials and pricing."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/canonical-nthu-thesis",
+    "description": "Thesis template for master and doctoral dissertations at National Tsing Hua University (NTHU). Academic formatting for research projects."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/casson-uom-thesis",
+    "description": "Thesis template for University of Manchester, compliant with 2024 Presentation of Theses Policy. Suitable for PhD, MD, DBA, and MPhil degrees. Academic formatting for research dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/casual-szu-report",
+    "description": "Course report template for Shenzhen University (SZU). Academic formatting for assignments, research, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/celluloid",
+    "description": "Screenplay template based on AMPAS guidelines. Suitable for film scripts, stage plays, and creative writing projects."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/cereal-words",
+    "description": "Word search puzzle template. Fun, interactive format for games, educational activities, and leisure."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/cetramed-polylux",
+    "description": "CeTraMed presentation template for Polylux. Suitable for academic, medical, and technical slides."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/charged-vde",
+    "description": "Unofficial VDE-style paper template for VDE conferences. Structured for technical research, figures, and references."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/chatter",
+    "description": "Dialogue writing template for multiple characters. Ideal for translations, short assignments, and creative writing."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/cheda-seu-thesis",
+    "description": "Unofficial thesis template for Southeast University (SEU). Supports undergraduate and graduate dissertations, academic research, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/chemicoms-paper",
+    "description": "RSC-style paper template for conferences and journals. Suitable for chemistry research, figures, and references."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/chicv",
+    "description": "Minimal, clean, fully-customizable, flexible CV template. Suitable for academic, technical, and professional resumes."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/chordish",
+    "description": "Chord sheet template for guitar and ukulele. Simple format for musicians, teachers, and performers."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/chribel",
+    "description": "Compact summary template with custom callouts. Ideal for study notes, quick references, and educational guides."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/chuli-cv",
+    "description": "Minimalistic, modern CV and cover letter templates. Suitable for job applications, academic profiles, and professional documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/classic-aau-report",
+    "description": "Report template for Aalborg University (AAU) students. Academic formatting for assignments, research, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/classic-jmlr",
+    "description": "Paper template for Journal of Machine Learning Research (JMLR) submissions. Structured for machine learning research, figures, and citations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/clean-acmart",
+    "description": "Simple, clean paper template for ACM conferences, following acmart style. Suitable for computer science research, figures, and references."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/clean-agh-thesis",
+    "description": "AGH-compliant thesis template. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/clean-cnam-template",
+    "description": "Modular, organized document template for CNAM branding and styling. Suitable for professional reports, business documents, and academic papers."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/clean-dhbw",
+    "description": "Typst template for DHBW. Academic formatting for assignments, research, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/clean-hda",
+    "description": "Computer Science thesis template for Hochschule Darmstadt (h_da). Academic formatting for graduate dissertations and research projects."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/clean-hwr",
+    "description": "Simple, attractive template for Berlin School for Economics and Law. Suitable for academic reports, assignments, and business documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/clean-math-paper",
+    "description": "Simple, attractive template for mathematical papers. Structured for proofs, theorems, and academic research in mathematics."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/clean-math-presentation",
+    "description": "Simple, attractive template for mathematical presentations. Ideal for lectures, seminars, and academic talks."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/clean-math-thesis",
+    "description": "Simple, attractive template for mathematical theses. Academic formatting for graduate and postgraduate dissertations in mathematics."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/clean-uoft-thesis",
+    "description": "Unofficial thesis template for University of Toronto School of Graduate Studies. Formatting-compliant for master's and doctoral dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/cleanified-hpi-research-proposal",
+    "description": "Clean, aesthetic research proposal template for HPI. Structured for academic project proposals and research planning."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/cleanified-hpi-thesis",
+    "description": "Clean, aesthetic thesis template for HPI, University of Potsdam. Academic formatting for bachelor's and master's dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/clickworthy-resume",
+    "description": "Flexible, responsive, ATS-friendly resume template. Includes cover letter and extendable CV options. Suitable for job applications in any industry."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/cob-unofficial",
+    "description": "Unofficial Company of Biologists (CoB) template for Typst. Suitable for research articles, journal submissions, and scientific documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/cumcm-muban",
+    "description": "Typst template for National College Students Mathematical Modeling Competition. Academic formatting for modeling reports and research documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/curriculo-acad",
+    "description": "CV template for creating resumes from LATTES entries. Suitable for academic, research, and professional profiles."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/cv-soft-and-hard",
+    "description": "Clean CV template for professional resumes. Suitable for job applications, academic profiles, and career advancement."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/cyberschool-errorteaplate",
+    "description": "Template originally made for Cyberschool of Rennes, a cybersecurity school. Suitable for technical documentation, coursework, and research projects."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/definitely-not-isec-slides",
+    "description": "Unofficial slides template for ISEC TUGraz. Academic formatting for presentations, seminars, and technical talks."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/definitely-not-isec-thesis",
+    "description": "Unofficial master's thesis template for ISEC TUGraz. Academic formatting for graduate dissertations and research projects."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/definitely-not-tuw-thesis",
+    "description": "Unofficial thesis template for TU Wien Informatics Institute. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/delegis",
+    "description": "Package and template for drafting legislative content in German-style structuring. Suitable for bylaws, legal documents, and policy drafting."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/divine-words",
+    "description": "Lab report template for academic experiments and research documentation. Simple, structured format for scientific analysis."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/dmi-basilea-thesis",
+    "description": "Thesis template for DMI at University of Basel. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/dvdtyp",
+    "description": "Colorful template for writing handouts or notes. Suitable for educational materials, study guides, and quick references."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/efter-plugget",
+    "description": "Lab report, essay, and exam template for Typst. Academic formatting for coursework, research, and assessments."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/electify",
+    "description": "German election ballot paper template. Visualizes dual-voting system (Erststimme & Zweitstimme). Suitable for educational and civic documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/elegant-paper",
+    "description": "Elegant paper template for Typst. Suitable for academic research, professional reports, and formal documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/elegant-polimi-thesis",
+    "description": "Unofficial thesis template for Polytechnic University of Milan. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/elsevier-replica",
+    "description": "Elsevier article template for Typst. Suitable for scientific journal submissions and research articles."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/elspub",
+    "description": "Elsevier article template for Typst. Suitable for scientific journal submissions and research articles."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/ennui-ur-report",
+    "description": "Customizable, unofficial report template for University of Rennes. Academic formatting for assignments, research, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/enseeiht-internship-report",
+    "description": "Unofficial internship report template for ENSEEIHT. Academic formatting for technical projects and research documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/enunciado-facil-fcfm",
+    "description": "Exercise document template for FCFM, UChile. Suitable for assignments, quizzes, and academic practice."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/etykett",
+    "description": "Label sheet printing template with rectangular grids. Suitable for office, organizational, and product labeling."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/examify",
+    "description": "Simple exam question paper template for Typst. Structured for academic assessments, quizzes, and tests."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/examine-ib",
+    "description": "Exam, test, and quiz template based on IB exam formatting. Suitable for international education and standardized assessments."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/examora",
+    "description": "Examination paper template for academic assessments. Supports structured questions, answers, and grading."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/exzellenz-tum-thesis",
+    "description": "Customizable thesis template for TU Munich. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/ezexam",
+    "description": "Exam and handout template inspired by LaTeX exam-zh package. Suitable for academic assessments and study guides."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/fantastic-cv",
+    "description": "Highly customizable, easy-to-use CV template. Suitable for academic, technical, and professional resumes."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/fauve-cdb",
+    "description": "Unofficial Collège Doctoral de Bretagne thesis manuscript template. Academic formatting for graduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/fh-joanneum-iit-thesis",
+    "description": "Bachelor's or master's thesis template for FH JOANNEUM. Academic formatting for graduate dissertations and research projects."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/fine-lncs",
+    "description": "Springer's Lecture Notes in Computer Science (LNCS) styled template. Suitable for computer science research, conference papers, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/finely-crafted-cv",
+    "description": "Modern résumé/curriculum vitae template with high attention to detail. Suitable for academic, technical, and professional profiles."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/flow",
+    "description": "Collection of templates and utilities for document creation. Suitable for academic, technical, and creative projects."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/flyingcircus",
+    "description": "Homebrew document template styled after the Flying Circus book. Includes commands for generating aircraft stats, vehicles, and ships. Suitable for creative writing and game design."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/formalettre",
+    "description": "Formal French letter template. Suitable for business, academic, and official correspondence."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/friendly-polylux",
+    "description": "Friendly, playful presentation template for Polylux. Ideal for educational, creative, and informal slides."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/fuzzy-cnoi-statement",
+    "description": "CNOI Olympiad in Informatics statement template for competitive programming. Structured for problem statements, solutions, and test cases."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/fyrst-ru-labreport",
+    "description": "Lab report template for Reykjavík University. Academic formatting for experiments, research, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/g-exam",
+    "description": "Exam creation template with student information, grade charts, score control, questions, and sub-questions. Suitable for academic assessments and standardized tests."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/gallus-hsg",
+    "description": "Thesis template for University of St. Gallen (HSG). Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/georges-yetyp",
+    "description": "Unofficial internship report template for Polytech Grenoble. Academic formatting for technical projects and research documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/gibz-script",
+    "description": "Teaching material template for GIBZ with components for tasks, hints, supplementary info, and code boxes. Supports DE/EN internationalization."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/gloat",
+    "description": "Academic CV template for natural sciences. Structured for research, publications, teaching, and professional profiles."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/gqe-lemoulon-presentation",
+    "description": "Quick slide generation template for GQE-Le Moulon presentations. Suitable for academic, technical, and research talks."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/grotesk-cv",
+    "description": "Clean CV and cover letter template inspired by Brilliant-cv and Fireside. Suitable for job applications, academic profiles, and professional documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/gru",
+    "description": "Despicable-themed Typst template. Fun, creative format for playful projects and informal documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/guided-resume-starter-cgc",
+    "description": "Guided starter resume template focused on highlighting experience. Hassle-free formatting for job seekers and professionals."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/hand-in",
+    "description": "Clean, minimalist assignment template. Suitable for academic coursework, homework, and project submissions."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/hanzi-calligraphy",
+    "description": "Calligraphy practice template with grid layout. Suitable for Chinese character writing and handwriting improvement."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/harvard-gsas-thesis-oat",
+    "description": "PhD thesis template for Harvard GSAS (Graduate School of Arts and Sciences). Academic formatting for doctoral dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/haw-hamburg-bachelor-thesis",
+    "description": "Unofficial bachelor thesis template for HAW Hamburg, Computer Science department. Academic formatting for undergraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/haw-hamburg-master-thesis",
+    "description": "Unofficial master thesis template for HAW Hamburg, Computer Science department. Academic formatting for graduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/haw-hamburg-report",
+    "description": "Unofficial report template for HAW Hamburg, Computer Science department. Academic formatting for technical documentation and research projects."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/hei-synd-report",
+    "description": "Report and project template for Systems Engineering (Synd) program at HEI-Vs School of Engineering, Sion, Switzerland. Academic formatting for technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/hei-synd-thesis",
+    "description": "Thesis template for Systems Engineering (Synd) program at HEI-Vs School of Engineering, Sion, Switzerland. Academic formatting for graduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/hetvid",
+    "description": "Template for light notes. Simple, clean format for quick documentation, study guides, and personal reminders."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/hhn-unitylab-thesis-template",
+    "description": "Official thesis template from Usability and Interaction Technology Laboratory (UniTyLab), Heilbronn University (HHN). Academic formatting for graduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/htl3r-da",
+    "description": "Diploma thesis template for HTL-Rennweg. Academic formatting for technical and vocational dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/htlwienwest-da",
+    "description": "Diploma thesis template for HTL Wien West students. Academic formatting for technical and vocational dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/humble-dtu-thesis",
+    "description": "Thesis template for DTU (Technical University of Denmark) in Typst. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/ichigo",
+    "description": "Customizable homework template for Typst. Suitable for academic assignments, coursework, and study guides."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/icicle",
+    "description": "Game-themed template for Typst. Fun, interactive format for creative projects and playful documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/ieee-monolith",
+    "description": "Single-column paper template with IEEE-style references and bibliography. Suitable for technical research, conference papers, and journal submissions."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/ijimai",
+    "description": "Article template for International Journal of Interactive Multimedia and Artificial Intelligence (IJIMAI). Academic formatting for research papers and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/illc-mol-thesis",
+    "description": "Official thesis template for Master of Logic students at ILLC. Academic formatting for graduate dissertations and research projects."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/impaginato",
+    "description": "Practical flyer template for print-and-cut at home. Suitable for events, promotions, and personal use."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/imprecv",
+    "description": "No-frills CV template using Typst and YAML for version control. Suitable for academic, technical, and professional resumes."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/impressive-impression",
+    "description": "Professional, readable curriculum vitae template for Typst. Suitable for job applications, academic profiles, and career advancement."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/inboisu",
+    "description": "Japanese invoice creation tool. Suitable for business, freelance, and personal financial documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/invicta-thesis",
+    "description": "Master's thesis template for Faculty of Engineering, University of Porto. Academic formatting for graduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/invoice-maker",
+    "description": "Invoice generation template for Typst. Create beautiful invoices from simple data records. Suitable for business and freelance use."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/isc-hei-bthesis",
+    "description": "Official bachelor thesis template for 'Informatique et systèmes de communication' (ISC) program, School of Engineering (HEI), Sion, Switzerland. Academic formatting for undergraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/isc-hei-exec-summary",
+    "description": "Official executive summary template for bachelor thesis in 'Informatique et systèmes de communication' (ISC) program, School of Engineering (HEI), Sion, Switzerland. Structured for academic summaries and project documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/isc-hei-report",
+    "description": "Official report template for 'Informatique et systèmes de communication' (ISC) bachelor degree program, School of Engineering (HEI), Sion, Switzerland. Academic formatting for technical documentation and project reports."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/jabiz",
+    "description": "Template for Japanese business documents. Suitable for contracts, invoices, and professional correspondence. 日本語のビジネス文書テンプレート"
+  },
+  {
+    "system": "typst",
+    "name": "@preview/jaconf",
+    "description": "Template for Japanese academic conference papers. Structured for research, figures, and references. 日本語の学会論文テンプレート"
+  },
+  {
+    "system": "typst",
+    "name": "@preview/jaconf-mscs",
+    "description": "Template for Japanese engineering conference papers. Academic formatting for technical research and documentation. 工学系の日本語学会論文テンプレート"
+  },
+  {
+    "system": "typst",
+    "name": "@preview/jastylest",
+    "description": "Style templates for writing reports, papers, and slides in Japanese. Works similarly to LaTeX. Suitable for academic, technical, and business documentation. Minimalist, customizable, Japanese, academic, technical, business."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/jastylest-zh",
+    "description": "Article template optimized for Chinese typesetting. Multilingual, Chinese, academic publishing, research, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/js",
+    "description": "Typst template based on LaTeX jsarticle/jsbook document classes. Suitable for academic reports, books, and technical documentation. Minimalist, customizable, academic, technical, book, report."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/juti",
+    "description": "Article template for JUTI: Jurnal Ilmiah Teknologi Informasi. Academic formatting for research papers and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/kdl-unofficial-template",
+    "description": "Unofficial template for community scenarios in the TTRPG 'KULT: Divinity Lost'. Suitable for game design, storytelling, and creative writing."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/kiresume",
+    "description": "Clean, customizable resume template. Suitable for job applications, academic profiles, and professional documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/klaro-ifsc-sj",
+    "description": "Report template for IFSC. Academic formatting for technical documentation, research, and project reports."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/knowledge-key",
+    "description": "Compact cheat-sheet template. Ideal for study notes, quick references, and educational guides."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/kthesis",
+    "description": "Unofficial thesis template for KTH Royal Institute of Technology. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/kunskap",
+    "description": "Template with generous spacing for reports, assignments, course documents, and similar short documents. Clean, readable formatting for academic and professional use."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/labtyp",
+    "description": "Label text template with JSON extraction using Typst query. Suitable for data labeling, organization, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/lacy-ubc-math-project",
+    "description": "Group project template for UBC MATH 100/101. Academic formatting for collaborative assignments and research documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/laskutys",
+    "description": "Invoice template satisfying Finnish standards (VH/3634/00.01.00/2023) with bank barcode and/or EPC QR code. Suitable for business and financial documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/latexlike-report",
+    "description": "Simple, fully customizable report template for Typst with LaTeX style. Suitable for academic, technical, and business documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/lavandula",
+    "description": "Modern, clean, customizable, flexible, user-friendly resume template. Suitable for job applications, academic profiles, and professional documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/leonux",
+    "description": "Minimalistic Typst slides template, similar to LaTeX beamer. Ideal for academic, technical, and business presentations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/letter-pro",
+    "description": "DIN 5008 letter template for Typst. Suitable for business, academic, and official correspondence."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/letterloom",
+    "description": "Letterloom package: user-friendly, customizable template for professional-looking letters. Suitable for business, academic, and personal correspondence."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/light-cv",
+    "description": "Minimalistic CV template. Requires Font Awesome fonts. Suitable for job applications, academic profiles, and professional documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/light-report-uia",
+    "description": "Report template for University of Agder. Academic formatting for assignments, research, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/lucky-icml",
+    "description": "ICML-style paper template for International Conference on Machine Learning. Structured for research, figures, and references."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/lumen",
+    "description": "Unofficial template for Université libre de Bruxelles thesis front cover. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/lyceum",
+    "description": "Academic book template in Typst. Suitable for research, textbooks, and scholarly publishing."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/machiatto",
+    "description": "Package for developing publications under MoKa Reads Specification. Suitable for academic, technical, and creative writing."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/mahou-cv",
+    "description": "Clean, composable CV template. Suitable for job applications, academic profiles, and professional documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/mantys",
+    "description": "Helper templates for building manuals for Typst packages and templates. Suitable for documentation, guides, and technical writing."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/manuscr-ismin",
+    "description": "Template for writing reports and various documents at École des Mines de Saint-Étienne. Academic formatting for assignments, research, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/marina-uol-thesis",
+    "description": "Unofficial thesis template for University of Lincoln. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/may",
+    "description": "Simple, elegant document template for multiple daily tasks. Suitable for personal organization, notes, and productivity."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/mcm-scaffold",
+    "description": "Typst template for COMAP's Mathematical Contest in MCM/ICM. Academic formatting for competition reports and research documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/meppp",
+    "description": "Template for modern physics experiment reports at Physics School of PKU. Academic formatting for lab documentation and research analysis."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/metronic",
+    "description": "Clean, colorful, modern CV template. Suitable for job applications, academic profiles, and professional documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/metropolis-polylux",
+    "description": "Metropolis style presentation template for Polylux. Ideal for academic, technical, and business slides."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/miage-rapide-tp",
+    "description": "Quick report generation template for MIAGE practical work. Academic formatting for assignments, research, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/min-article",
+    "description": "Simple, easy template for writing ABNT-compliant articles. Suitable for academic publishing, research, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/min-book",
+    "description": "Simple, complete book template without introducing new syntax. Suitable for fiction, non-fiction, and academic publishing."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/min-manual",
+    "description": "Modern, sober manual template inspired by classic manpages. Suitable for technical documentation, user guides, and reference manuals."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/min-resume",
+    "description": "Simple, professional résumé template. Suitable for job applications, academic profiles, and career advancement."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/minerva-report-fcfm",
+    "description": "Template for articles, reports, and assignments for Facultad de Ciencias Físicas y Matemáticas (FCFM). Academic formatting for research and coursework."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/minerva-thesis",
+    "description": "Thesis template for doctoral and master's dissertations with Ghent University-specific and generic features. Academic formatting for research projects."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/minimal-cv",
+    "description": "Minimalist curriculum vitae template for professional resumes. Clean layout, customizable sections, modern design, suitable for job applications and academic profiles."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/minimal-note",
+    "description": "Minimalist note template with colorful accents. Suitable for study notes, personal documentation, and quick references."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/minimal-presentation",
+    "description": "Modern, minimalistic presentation template. Ready to use for academic, technical, and business slides."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/minimal-thesis-luebeck",
+    "description": "Minimal thesis template for dissertations and academic research. Simple, clean formatting for university students writing bachelor's or master's theses."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/minimal-unilim-thesis",
+    "description": "Minimal thesis template for University of Limoges. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/minimalistic-latex-cv",
+    "description": "Minimalistic LaTeX-style CV template for professionals. Suitable for job applications, academic profiles, and career advancement."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-acad-cv",
+    "description": "Academic CV template inspired by moderncv LaTeX. Structured for research, teaching, publications, and grants. Modern, professional, suitable for university faculty and researchers."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-bnu-course-paper",
+    "description": "Beijing Normal University course paper template. Academic formatting for assignments, research, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-bnu-thesis",
+    "description": "Beijing Normal University thesis template. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-buaa-thesis",
+    "description": "Modern thesis template for BUAA. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-cqut-thesis",
+    "description": "Chongqing University of Technology thesis template. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-cug-report",
+    "description": "Chinese technical report template. Structured for academic, business, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-cug-thesis",
+    "description": "China University of Geosciences (Wuhan) thesis template. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-cv",
+    "description": "Modern resume template based on Awesome-CV LaTeX. Suitable for job applications, academic profiles, and professional documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-ecnu-thesis",
+    "description": "East China Normal University thesis template. Academic formatting for undergraduate and graduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-g7-32",
+    "description": "Academic document template compliant with GOST 7.32‑2017. Suitable for research, reports, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-hkust-thesis",
+    "description": "Thesis template for HKUST-GZ in Typst. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-hsh-thesis",
+    "description": "Thesis template for Hochschule Hannover, Faculty 4. Academic formatting for bachelor's and master's dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-iu-thesis",
+    "description": "Modern thesis template for Indiana University in Typst. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-nenu-thesis",
+    "description": "Thesis template for NENU students. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-nju-thesis",
+    "description": "Nanjing University thesis template. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-ovgu-fma-polylux",
+    "description": "Unofficial Polylux presentation template styled after Faculty of Mathematics, Otto-von-Guericke-University Magdeburg. Academic formatting for technical and research slides."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-report-umfds",
+    "description": "Report template for Faculty of Sciences, University of Montpellier. Academic formatting for research, assignments, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-resume",
+    "description": "Modern resume/CV template. Suitable for job applications, academic profiles, and professional documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-russian-dissertation",
+    "description": "Russian PhD thesis template. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-se-kul-thesis",
+    "description": "Unofficial master's thesis template for engineering science faculty at KU Leuven. Academic formatting for graduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-shu-thesis",
+    "description": "Shanghai University undergraduate thesis template. Academic formatting for research and dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-sjtu-thesis",
+    "description": "Shanghai Jiao Tong University thesis template in Typst. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-sustech-thesis",
+    "description": "Southern University of Science and Technology (SUSTech) bachelor thesis template. Academic formatting for undergraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-sysu-thesis",
+    "description": "Sun Yat-sen University (SYSU) thesis template in Typst. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-sysu-touying",
+    "description": "Sun Yat-sen University (SYSU) presentation template in Typst. Academic formatting for technical and research slides."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-szu-thesis",
+    "description": "Shenzhen University thesis template, modified from Nanjing University thesis. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-technique-report",
+    "description": "Modern-style technique report template in Typst. Suitable for technical documentation, research, and business reports."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-ucas-thesis",
+    "description": "Master's or doctoral thesis template for University of Chinese Academy of Sciences. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-uestc-thesis",
+    "description": "University of Electronic Science and Technology of China (UESTC) master's thesis template. Academic formatting for graduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-uit-thesis",
+    "description": "Modern thesis template in Typst. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-um-thesis",
+    "description": "University of Macau thesis template. Academic formatting for graduate and postgraduate dissertations. 澳门大学学位论文。"
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-unimib-thesis",
+    "description": "Thesis template for University of Milano-Bicocca. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-unito-thesis",
+    "description": "Thesis template for University of Turin. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-ustc-proposal",
+    "description": "Proposal template for University of Science and Technology of China. Academic formatting for research proposals and project planning. 中国科学技术大学开题报告模板"
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-whs-assignment",
+    "description": "Assignment template for Westfälische Hochschule. Academic formatting for coursework, homework, and project submissions."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-whs-thesis",
+    "description": "Thesis template for Westfälische Hochschule. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-wku-thesis",
+    "description": "Graduate thesis template for Wenzhou-Kean University Computer Science and Mathematics department. Academic formatting for research and dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-xmu-thesis",
+    "description": "Xiamen University thesis template. Academic formatting for graduate and postgraduate dissertations. 厦门大学学位论文模板。"
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modern-ysu-thesis",
+    "description": "Yanshan University thesis template. Academic formatting for graduate and postgraduate dissertations. 燕山大学学位论文模板。"
+  },
+  {
+    "system": "typst",
+    "name": "@preview/moderner-cv",
+    "description": "Resume template based on moderncv LaTeX package. Suitable for job applications, academic profiles, and professional documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modernpro-coverletter",
+    "description": "Cover letter template with modern Sans font. Suitable for job applications, formal letters, and professional correspondence."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/modernpro-cv",
+    "description": "CV template inspired by Deedy-Resume. Suitable for job applications, academic profiles, and professional documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/muw-community-templates",
+    "description": "Library of templates in MedUni Wien CD. Suitable for academic, medical, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/muw-touying-community",
+    "description": "Touying presentation theme for Medical University of Vienna. Academic formatting for technical and research slides."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/ncku-later",
+    "description": "Thesis/dissertation template in Typst for National Cheng Kung University. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/neat-cv",
+    "description": "Modern, elegant CV template for Typst, inspired by Awesome CV and simple-hipstercv. Suitable for job applications, academic profiles, and professional documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/neat-timetable",
+    "description": "Class schedule template for 2-week (numerator/denominator) cycles. Suitable for academic planning, timetables, and organization."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/nifty-ntnu-thesis",
+    "description": "Thesis template for NTNU. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/nikonova",
+    "description": "Math exercise template with unique dark theme. Suitable for assignments, practice, and educational guides."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/nonsense",
+    "description": "Template for generating nonsensical math papers or sections. Fun, creative format for playful projects and informal documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/not-jku-thesis",
+    "description": "Customizable unofficial thesis template for JKU, derived from Fabian Scherer and Leon Weber. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/not-tudabeamer-2023",
+    "description": "Unofficial TU Darmstadt Beamer 2023 template. Suitable for academic, technical, and business presentations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/noteworthy",
+    "description": "Typst template for creating class notes, especially for mathematics. Suitable for study notes, educational guides, and quick references."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/now-radboud-thesis",
+    "description": "Thesis template for Radboud University. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/nutshell",
+    "description": "Resume template. Suitable for job applications, academic profiles, and professional documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/obsidius",
+    "description": "Modern template for study notes. Suitable for academic documentation, personal organization, and quick references."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/october",
+    "description": "Simple printable year calendar template. Suitable for personal organization, scheduling, and planning."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/ofbnote",
+    "description": "Document template using French Office for Biodiversity design guidelines. Suitable for environmental reports, research, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/optimal-ovgu-thesis",
+    "description": "Thesis template for Otto von Guericke University Magdeburg. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/orange-book",
+    "description": "Book template inspired by The Legrand Orange Book of Mathias Legrand and Vel. Suitable for fiction, non-fiction, and academic publishing."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/ori",
+    "description": "Simple yet expressive template for notes, reports, and documents in Chinese and English. Suitable for academic, technical, and personal documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/orionotes",
+    "description": "Book-like notes template for entire university courses. Suitable for study notes, educational guides, and academic documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/ostfriesen-layout",
+    "description": "Clean, professional template for academic writing at University of Applied Sciences Emden/Leer. Suitable for research, assignments, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/paddling-tongji-thesis",
+    "description": "Tongji University undergraduate thesis template. Academic formatting for research and dissertations. 同济大学本科生毕业设计论文模板"
+  },
+  {
+    "system": "typst",
+    "name": "@preview/para-lipics",
+    "description": "LIPIcs-style template. Suitable for computer science research, conference papers, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/parcio-slides",
+    "description": "Simple Polylux slide template based on ParCIO working group at OvGU Magdeburg. Suitable for academic, technical, and business presentations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/parcio-thesis",
+    "description": "Simple thesis template based on ParCIO working group at OvGU Magdeburg. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/paris-saclay-thesis-flat",
+    "description": "Unofficial flat-design thesis template for Paris-Saclay University. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/pc-letter",
+    "description": "Simple letter template for personal correspondence. Suitable for informal notes, thank you letters, and invitations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/peace-of-posters",
+    "description": "Scientific poster template for Typst. Suitable for academic conferences, research presentations, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/pesha",
+    "description": "Clean, minimal résumé or CV template. Suitable for job applications, academic profiles, and professional documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/pioneering-rlj",
+    "description": "Template for submissions to Reinforcement Learning Conference/Journal (RLC/RLJ). Academic formatting for research papers and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/politemplate",
+    "description": "Report and assignment template for Poli-USP University. Academic formatting for coursework, research, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/porygon",
+    "description": "CV template generated from a JSON file. Suitable for job applications, academic profiles, and professional documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/poster-syndrome",
+    "description": "Poster template with custom frame placement. Suitable for academic conferences, research presentations, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/preprintx",
+    "description": "Two-column preprint layout inspired by HenriquesLab bioRxiv template. Suitable for research papers, technical reports, and scientific documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/pretty-hdm-thesis",
+    "description": "Unofficial HdM thesis template inspired by Prof. Dr. Dirk Heuzeroth. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/pro-letter",
+    "description": "Formal business letter template. Suitable for professional correspondence, job applications, and official communications."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/problemst",
+    "description": "Simple, easy-to-use template for problem sets, homework, and assignments. Suitable for academic coursework and educational guides."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/project-isi-zac",
+    "description": "Template for writing reports and theses. Academic formatting for research, assignments, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/psl-thesis",
+    "description": "PhD thesis manuscript template for Paris Sciences et Lettres (PSL) University. Academic formatting for graduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/put-thesis",
+    "description": "Official thesis template for Poznań University of Technology. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/qooklet",
+    "description": "Quick start template for scientific booklets. Suitable for research, technical documentation, and academic publishing."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/quic-style",
+    "description": "Cohesive Typst design template for daily life, research, and experiments. Versatile formatting for personal, academic, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/quick-minutes",
+    "description": "Typst template for keeping meeting minutes. Suitable for business, academic, and organizational documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/quick-sip",
+    "description": "Template for creating quick reference handbook-style checklists. Suitable for technical guides, business processes, and educational documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/quizst",
+    "description": "Typst template for multiple-choice exams (MCQ). Suitable for academic testing, quizzes, and educational assessments."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/report-flow-ustc",
+    "description": "Template suitable for USTC students to complete course assignments or submit lab reports. Academic formatting for research, coursework, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/resume-ng",
+    "description": "Typst resume template designed for optimal information density and aesthetic appeal. Suitable for job applications, academic profiles, and professional documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/rubber-article",
+    "description": "Simple template recreating the look of classic LaTeX article. Suitable for academic papers, technical reports, and research documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/s6t5-page-bordering",
+    "description": "Template for writing borders around page margins and header/footer. Suitable for creative documents, reports, and personalized formatting."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/sano-presentation-template",
+    "description": "Small, minimal presentation template. Suitable for academic, technical, and business slides."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/scholarly-epfl-thesis",
+    "description": "Thesis template for EPFL. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/scholarly-tauthesis",
+    "description": "Template for writing Tampere University theses. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/scribbling-hm",
+    "description": "Unofficial bachelor's thesis template for Munich University of Applied Sciences (Hochschule München). Academic formatting for undergraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/scripst",
+    "description": "Scripst - versatile scripting template for seamless Typst typesetting. Suitable for technical documentation, automation scripts, and educational guides."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/sdu-exp-report",
+    "description": "Report template for SDU Computer Science students. Academic formatting for assignments, research, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/sdu-touying-simpl",
+    "description": "Presentation template based on Touying. Suitable for academic, technical, and business slides."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/shane-hhu-thesis",
+    "description": "Hohai University undergraduate thesis (design) template. Academic formatting for research and dissertations. 河海大学本科生毕业论文（设计）模板。"
+  },
+  {
+    "system": "typst",
+    "name": "@preview/sheetstorm",
+    "description": "Template for university exercise sheets. Suitable for assignments, practice, and educational guides."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/shuosc-shu-bachelor-thesis",
+    "description": "Shanghai University undergraduate thesis Typst template - SHUOSC open source community edition. Academic formatting for research and dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/silky-letter-insa",
+    "description": "Template for letters and short documents of INSA, a French engineering school. Suitable for professional correspondence, academic documentation, and official communications."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/silky-report-insa",
+    "description": "Template for reports and documents of INSA, a French engineering school. Academic formatting for research, assignments, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/silky-slides-insa",
+    "description": "Template for presentations of INSA, a French engineering school. Suitable for academic, technical, and business slides."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/silver-dev-cv",
+    "description": "CV template by an engineer-recruiter, used by https://silver.dev. Suitable for job applications, technical profiles, and professional documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/simple-bupt-report",
+    "description": "Simple BUPT experiment report template. Academic formatting for assignments, research, and technical documentation. 一份简单的北邮实验报告模板"
+  },
+  {
+    "system": "typst",
+    "name": "@preview/simple-handout",
+    "description": "Simple handout template adapted to Chinese. Suitable for study notes, educational guides, and quick references."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/simple-ntnu-report",
+    "description": "Template for shorter academic reports at NTNU in Trondheim. Academic formatting for research, assignments, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/simple-preavis",
+    "description": "French move-out letter template. Suitable for personal correspondence, official communications, and documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/simple-technical-resume",
+    "description": "Simple technical resume template designed to fit within a page and work well with ATS. Suitable for job applications, technical profiles, and professional documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/simple-tubs-letter",
+    "description": "Letter template resembling the TUBS corporate design. Suitable for professional correspondence, job applications, and official communications."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/simple-unimi-thesis",
+    "description": "Unofficial thesis template for Università Statale degli Studi di Milano. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/simple-ve-thesis",
+    "description": "Unofficial thesis template for Ca' Foscari University of Venice. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/sleek-university-assignment",
+    "description": "Sleek template for university assignments. Academic formatting for coursework, homework, and project submissions."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/slydst",
+    "description": "Template for creating simple static slides using standard headings. Suitable for academic, technical, and business presentations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/smooth-tmlr",
+    "description": "Paper template for submission to Transactions on Machine Learning Research (TMLR). Academic formatting for research papers and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/sns-polylux-template",
+    "description": "Unofficial template for slides in Polylux with SNS and UniPi colors. Suitable for academic, technical, and business presentations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/solo-lu-df",
+    "description": "Template for qualification papers, bachelor's theses, and master's theses for University of Latvia, Computer Science programme. Academic formatting for research and dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/sos-ugent-style",
+    "description": "Template for documents, presentations, and dissertations in uniform UGent style. Unofficial template. Academic formatting for research, assignments, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/soviet-matrix",
+    "description": "Tetris game template in Typst. Suitable for playful projects, creative documentation, and informal guides."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/ssrn-scribe",
+    "description": "Personal working paper template for general documents and SSRN papers. Suitable for research, technical documentation, and academic publishing."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/starter-journal-article",
+    "description": "Starter template for journal articles. Academic formatting for research papers, technical reports, and scientific documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/stellar-iac",
+    "description": "Template for International Astronautical Congress (IAC) manuscript. Academic formatting for research papers and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/storytiles",
+    "description": "Template for slides with 4 images per slide, ideal for group meetings. Suitable for academic, technical, and business presentations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/structured-uib",
+    "description": "Lab report template for PHYS114 at University of Bergen. Academic formatting for research, assignments, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/stundenzettel",
+    "description": "Template for tracking work hours with Typst. Suitable for personal organization, scheduling, and planning."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/stv-vub-huisstijl",
+    "description": "Unofficial template for Vrije Universiteit Brussel (VUB) huisstijl in Typst. Academic formatting for research, assignments, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/summy",
+    "description": "Template for generating cheatsheets with automatic color coding and sectioning, focused on space-efficiency. Suitable for study notes, educational guides, and quick references."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/sunny-famnit",
+    "description": "Thesis template for University of Primorska, FAMNIT. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/sunny-orasis",
+    "description": "Paper template for French national conference ORASIS, following author guidelines (also works for RFIAP and CAP). Academic formatting for research papers and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/superb-pci",
+    "description": "Peer Community In (PCI) and Peer Community Journal (PCJ) template. Academic formatting for research papers, technical reports, and scientific documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/supercharged-dhbw",
+    "description": "Unofficial template for DHBW. Academic formatting for research, assignments, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/swe-cv",
+    "description": "Engineering-oriented CV template. Suitable for job applications, technical profiles, and professional documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/sweet-graduate-resume",
+    "description": "Simple graduate student resume template. Suitable for job applications, academic profiles, and professional documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/tapestry",
+    "description": "Template for creating LaTeX-like class notes. Suitable for study notes, educational guides, and academic documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/tatras-ieee",
+    "description": "IEEE-style paper template for use with Slovak language. Academic formatting for research papers and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/tfguf",
+    "description": "Template for TFGs in the Physics degree at UNIR. Academic formatting for research, assignments, and technical documentation. Plantilla para hacer TFGs en el Grado en Física de UNIR"
+  },
+  {
+    "system": "typst",
+    "name": "@preview/tgm-hit-protocol",
+    "description": "Protocol template for students of the HIT department at TGM Wien. Academic formatting for research, assignments, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/tgm-hit-thesis",
+    "description": "Diploma thesis template for students of the HIT department at TGM Wien. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/thesist",
+    "description": "Master's thesis template for Instituto Superior Técnico (IST). Academic formatting for graduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/thusliding",
+    "description": "Slide template for Tsinghua University, modified from Diatypst. Suitable for academic, technical, and business presentations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/tidbit-uoc",
+    "description": "Academic report template for UOC with APA styling. Suitable for research, assignments, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/tiefletter",
+    "description": "Invoice and offer template for Austrian freelancers. Suitable for business documentation, professional correspondence, and financial reports."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/tieflied",
+    "description": "Song book template (Liederbuch). Suitable for music documentation, creative projects, and educational guides."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/tlacuache-thesis-fc-unam",
+    "description": "Template for writing a thesis for the Faculty of Sciences. Academic formatting for graduate and postgraduate dissertations. Template para escribir una tesis para la facultad de ciencias."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/tntt",
+    "description": "Tntt is Not a Tex Thesis Template for Tsinghua University. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/tonguetoquill-usaf-memo",
+    "description": "Memo template fully compliant with AFH 33-337 'The Tongue and Quill'. Suitable for official communications, business documentation, and professional correspondence."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/touying-aqua",
+    "description": "Aqua theme in Touying - powerful package for creating presentation slides in Typst. Suitable for academic, technical, and business presentations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/touying-brandred-uobristol",
+    "description": "Touying slide theme for University of Bristol. Suitable for academic, technical, and business presentations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/touying-buaa",
+    "description": "Touying slide theme for Beihang University. Suitable for academic, technical, and business presentations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/touying-dids",
+    "description": "Touying slide theme for DIDS Lab. Suitable for academic, technical, and business presentations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/touying-flow",
+    "description": "Touying slide theme designed to enhance audience immersion and foster a deeper state of flow. Suitable for engaging academic, technical, and business presentations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/touying-ppt-hustvn",
+    "description": "Touying slide theme for HUST (Hanoi University of Science and Technology). Suitable for academic, technical, and business presentations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/touying-pres-ustc",
+    "description": "Touying slide theme for USTC, easily customizable for any university or organization. Suitable for academic, technical, and business presentations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/touying-quarto-clean",
+    "description": "Clean slide theme for Touying. Suitable for academic, technical, and business presentations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/touying-quick",
+    "description": "Quick-start template based on Touying for academic reports. Suitable for research, technical documentation, and educational guides."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/touying-simpl-cau",
+    "description": "Touying slide theme for China Agricultural University. Suitable for academic, technical, and business presentations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/touying-simpl-hkustgz",
+    "description": "Touying slide theme for HKUST(GZ). Suitable for academic, technical, and business presentations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/touying-simpl-sjtu",
+    "description": "Shanghai Jiao Tong University Touying slide theme. Suitable for academic, technical, and business presentations. 上海交通大学 Touying 幻灯片主题"
+  },
+  {
+    "system": "typst",
+    "name": "@preview/touying-unistra-pristine",
+    "description": "Touying theme adhering to University of Strasbourg style guide principles. Suitable for academic, technical, and business presentations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/toy-cv",
+    "description": "Colorful, elegant 2-column CV and cover letter template. Simple to use and adapt for job applications, academic profiles, and professional documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/tracl",
+    "description": "Template for papers at *ACL conferences. Academic formatting for research papers, technical reports, and scientific documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/ttt-exam",
+    "description": "Collection of tools to make a teacher's life easier (German). Suitable for exams, assignments, and educational documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/ttt-lists",
+    "description": "Template to create student lists, part of the ttt-collection for teachers. Suitable for academic organization, class management, and educational documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/ttuile",
+    "description": "Template for students' lab reports at INSA Lyon, a French engineering school. Academic formatting for research, assignments, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/tud-corporate-design-slides",
+    "description": "Presentation template for TU Dresden (Technische Universität Dresden). Suitable for academic, technical, and business presentations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/tufte-memo",
+    "description": "Memo document template inspired by Edward Tufte's book design. Suitable for professional correspondence, business documentation, and creative projects."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/tuhi-alumni-vuw",
+    "description": "Template for VUW alumni profile flyers. Suitable for academic, professional, and promotional documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/tuhi-assessment-vuw",
+    "description": "Template for VUW assessments. Suitable for academic testing, coursework, and educational documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/tuhi-booklet-vuw",
+    "description": "Course description booklet template for VUW courses. Suitable for academic documentation, study guides, and educational publishing."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/tuhi-course-poster-vuw",
+    "description": "Poster template for VUW course descriptions. Suitable for academic, technical, and promotional presentations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/tuhi-exam-vuw",
+    "description": "Template for VUW exams. Suitable for academic testing, quizzes, and educational assessments."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/tuhi-labscript-vuw",
+    "description": "Labscript template for experimental courses at VUW. Suitable for academic research, technical documentation, and educational guides."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/tuhi-postcard-vuw",
+    "description": "Template for promotional postcards. Suitable for academic, professional, and creative documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/tuhi-presentation-vuw",
+    "description": "Template for presentation slides with tailored aesthetics for VUW. Suitable for academic, technical, and business presentations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/tuhi-programme-vuw",
+    "description": "Template for 3-year degree overview tables for VUW. Suitable for academic planning, course organization, and educational documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/tyniverse",
+    "description": "Collection of templates for homework, cheatpapers, and more. Suitable for academic coursework, study notes, and educational guides."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/typographic-resume",
+    "description": "Stylish, customizable résumé template for Typst, designed with elegant typographic variations. Suitable for job applications, academic profiles, and professional documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/typographix-polytechnique-reports",
+    "description": "Report template for Polytechnique students (from TypographiX). Academic formatting for research, assignments, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/typographix-polytechnique-slides",
+    "description": "Presentation slide template for Polytechnique students (from TypographiX). Suitable for academic, technical, and business presentations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/typslides",
+    "description": "Minimalistic Typst slides template. Suitable for academic, technical, and business presentations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/typxidian",
+    "description": "Modern note-taking, thesis, and academic reports inspired by Obsidian. Suitable for study notes, research, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/ucpc-solutions",
+    "description": "Port of UCPC solutions theme. Suitable for academic documentation, technical guides, and research reports."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/ucph-nielsine-touying",
+    "description": "Slide template built on Touying for University of Copenhagen. Suitable for academic, technical, and business presentations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/unilab",
+    "description": "Lab report template. Suitable for academic research, technical documentation, and educational guides."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/universal-cau-thesis",
+    "description": "China Agricultural University thesis template in Typst. Academic formatting for graduate and postgraduate dissertations. 中国农业大学毕业论文的Typst模板"
+  },
+  {
+    "system": "typst",
+    "name": "@preview/universal-hit-thesis",
+    "description": "Harbin Institute of Technology thesis template in Typst. Academic formatting for graduate and postgraduate dissertations. 哈尔滨工业大学学位论文模板"
+  },
+  {
+    "system": "typst",
+    "name": "@preview/unofficial-cityuhk-thesis",
+    "description": "Unofficial thesis template for City University of Hong Kong. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/unofficial-fhict-document-template",
+    "description": "Document template for creating professional-looking documents with Typst, tailored for FHICT (Fontys Hogeschool ICT). Suitable for academic, technical, and business documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/unofficial-fontys-paper-template",
+    "description": "Template for creating research papers in Typst, tailored for Fontys Hogeschool. Academic formatting for research, assignments, and technical documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/unofficial-hka-thesis",
+    "description": "Unofficial thesis template for University of Applied Sciences Karlsruhe, Computer Science faculty. Academic formatting for bachelor's and master's dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/unofficial-sdu-thesis",
+    "description": "Shandong University undergraduate thesis template. Supports academic research, dissertations, and project reports. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/unofficial-tyut-thesis",
+    "description": "Unofficial Typst template for Taiyuan University of Technology undergraduate thesis. Academic formatting for research and dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/unofficial-ukim-thesis",
+    "description": "Unofficial thesis template for University of St. Cyril and Methodius, Skopje. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/uo-pup-thesis-manuscript",
+    "description": "Unofficial undergraduate thesis manuscript template for Polytechnic University of the Philippines. Academic formatting for research projects and dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/uo-tsinghua-thesis",
+    "description": "Unofficial Typst template for Tsinghua University graduate thesis. Supports academic research, dissertations, and thesis writing. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/upb-cn-templates",
+    "description": "Templates for seminar reports, thesis proposals, and dissertations at Paderborn University Computer Networks Group. Academic formatting for research documentation, assignments, and technical reports."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/upb-corporate-design-slides",
+    "description": "Corporate design presentation template for Paderborn University. Suitable for academic, business, and research presentations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/utype-neuies-reports",
+    "description": "Unofficial thesis proposal, thesis, and term project template for NEU Institute of Educational Sciences. Academic formatting for research, coursework, and dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/uwnibook-color",
+    "description": "Personal book template with multilingual support. Suitable for fiction, non-fiction, and academic publishing."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/vanilla",
+    "description": "Minimalist Typst package with styling similar to MS Word defaults. Suitable for general documents, reports, and letters."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/vantage-cv",
+    "description": "ATS-friendly CV template. Simple, clean layout for professional resumes, job applications, and academic profiles."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/vercanard",
+    "description": "Colorful CV template for creative professionals. Customizable sections, modern design, suitable for job applications, portfolios, and academic profiles."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/versatile-apa",
+    "description": "Comprehensive APA 7th Edition style template for Typst. Suitable for student papers, professional research, and academic publishing."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/vibrant-color",
+    "description": "Modern report template with vibrant color options. Ideal for business, academic, and technical reports."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/vienna-tech",
+    "description": "Unofficial thesis template for TU Wien civil and environmental engineering faculty. Academic formatting for graduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/volt-internship-ensea",
+    "description": "Unofficial internship report template for ENSEA, French engineering school. Structured for technical and research internships. Academic formatting for professional documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/volt-lab-ensea",
+    "description": "Unofficial lab report template for ENSEA, French engineering school. Suitable for technical experiments, research documentation, and academic reports."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/wenyuan-campaign",
+    "description": "DnD 5e campaign document template. Supports adventure writing, character sheets, and campaign planning. Suitable for creative projects and game documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/wonderous-book",
+    "description": "Fiction book template with running headers and serif typography. Ideal for novelists, storytellers, and creative writers. Suitable for publishing and literary documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/wut-thesis",
+    "description": "Official thesis template for Warsaw University of Technology. Academic formatting for graduate and postgraduate dissertations."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/xyznote",
+    "description": "Simple, functional note template for Typst. Suitable for class notes, meeting minutes, and personal documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/yagenda",
+    "description": "Tabular meeting agenda template with YAML-defined items. Ideal for business meetings, project planning, and event scheduling."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/yuan-resume",
+    "description": "Elegant academic resume template. Structured for research, teaching, publications, and professional profiles. Suitable for job applications and academic documentation."
+  },
+  {
+    "system": "typst",
+    "name": "@preview/zen-zine",
+    "description": "Zine template with excellent typesetting. Suitable for creative magazines, newsletters, and artistic publications."
+  },
+  {
+    "system": "quarto",
+    "name": "danilofreire/quarto-templates/article",
+    "description": "Quarto template for scholarly articles using Pandoc Markdown. Supports citations, sections, and figures. Designed for journal submissions and academic publishing."
+  },
+  {
+    "system": "quarto",
+    "name": "danilofreire/quarto-templates/cv",
+    "description": "Quarto CV template for professional resumes. Markdown-based, customizable layout, suitable for academic, technical, or business job applications."
+  },
+  {
+    "system": "quarto",
+    "name": "danilofreire/quarto-templates/letter",
+    "description": "Quarto template for professional letters using Pandoc Markdown. Customizable for business, academic, and personal correspondence."
+  },
+  {
+    "system": "quarto",
+    "name": "danilofreire/quarto-templates/syllabus",
+    "description": "Quarto template for course syllabi using Pandoc Markdown. Structured for academic schedules, learning objectives, and grading policies."
+  },
+  {
+    "system": "quarto",
+    "name": "danilofreire/quarto-templates/title-page",
+    "description": "Quarto template for title pages using Pandoc Markdown. Suitable for academic papers, reports, and presentations."
+  }
+]
