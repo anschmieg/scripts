@@ -1,0 +1,14 @@
+{
+    "apps_to_open": [
+        "Slack",
+        "Mail",
+        "sipgate CLINQ"
+    ],
+    "foreground_app": {
+        "name": "Arc",
+        "space": "Work",
+        "url": "https://girona-software.atlassian.net/jira/software/c/projects/KOTA01/boards/143"
+    },
+    "calendar_name": "Arbeit",
+    "session_logon_time": 1736501231
+}
