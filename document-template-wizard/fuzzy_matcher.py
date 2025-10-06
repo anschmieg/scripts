@@ -1,115 +1,280 @@
+import argparse
 import json
+import pickle
 import subprocess
 import sys
 
-from fuzzywuzzy import process
+import numpy as np
+from scipy.spatial.distance import cosine
 
-# --- Configuration ---
+# NOTE: Ensure 'sentence-transformers' is installed: pip install sentence-transformers
+from sentence_transformers import SentenceTransformer
+
+# --- Configuration (Centralized Constants) ---
 TEMPLATE_FILE = "templates.json"
-FUZZY_THRESHOLD = 75  # Minimum similarity score (out of 100) for a "good" match
+VECTOR_CACHE_FILE = "templates_vectors.pkl"
+MODEL_NAME = "all-MiniLM-L6-v2"
+MIN_SEMANTIC_SCORE = 0.5  # Cosine Similarity score threshold (50%)
 
 
-def load_local_templates():
-    """Loads the curated template catalog from the local JSON file."""
+# --- ANSI Escape Codes for Terminal Colors and Formatting ---
+class Colors:
+    """ANSI color codes."""
+
+    GREEN = "\033[92m"
+    YELLOW = "\033[93m"
+    BLUE = "\033[94m"
+    RED = "\033[91m"
+    END = "\033[0m"
+    BOLD = "\033[1m"
+
+
+# --- Utility Functions ---
+
+
+def load_template_file():
+    """Loads templates from the JSON file."""
     try:
         with open(TEMPLATE_FILE, "r", encoding="utf-8") as f:
             return json.load(f)
     except FileNotFoundError:
-        print(f"Error: Template catalog '{TEMPLATE_FILE}' not found.")
-        print("Please ensure the file exists in the current directory.")
+        print(
+            f"{Colors.RED}Error: Template catalog '{TEMPLATE_FILE}' not found.{Colors.END}"
+        )
+        print(
+            f"Run the setup command first: {Colors.YELLOW}python template_wizard_cli.py setup{Colors.END}"
+        )
         sys.exit(1)
     except json.JSONDecodeError:
-        print(f"Error: Failed to parse '{TEMPLATE_FILE}'. Check JSON formatting.")
+        print(
+            f"{Colors.RED}Error: Failed to parse '{TEMPLATE_FILE}'. Check JSON formatting.{Colors.END}"
+        )
         sys.exit(1)
 
 
-def fuzzy_match_template(prompt, templates):
-    """
-    Performs fuzzy matching on both template names and descriptions.
-    Returns the top matches above the threshold.
-    """
-    # Create a list of names/descriptions to search against, using the full object
-    search_targets = {}
-    for t in templates:
-        # Use the name + description as a single search target for better coverage
-        search_target = f"{t['name']} - {t['description']}"
-        search_targets[search_target] = t
+def load_template_vectors():
+    """Loads templates and vector cache for search mode."""
+    templates = load_template_file()
 
-    # 1. Get best matches based on the composite string
-    best_matches = process.extractBests(
-        prompt,
-        list(search_targets.keys()),
-        score_cutoff=FUZZY_THRESHOLD,
-        limit=5,  # Look for top 5 relevant matches
+    try:
+        with open(VECTOR_CACHE_FILE, "rb") as f:
+            cache = pickle.load(f)
+
+        # Load the model required for the vectors (downloads if not cached globally)
+        model = SentenceTransformer(cache["model"])
+
+        return templates, cache["names"], cache["vectors"], model
+
+    except FileNotFoundError:
+        print(
+            f"{Colors.RED}Error: Vector cache '{VECTOR_CACHE_FILE}' not found.{Colors.END}"
+        )
+        print(
+            f"Please run the setup command first: {Colors.YELLOW}python template_wizard_cli.py setup{Colors.END}"
+        )
+        sys.exit(1)
+    except Exception as e:
+        print(f"{Colors.RED}Error loading semantic model/cache: {e}{Colors.END}")
+        sys.exit(1)
+
+
+# --- Subcommand 1: Setup Logic ---
+
+
+def setup_vectors(args):
+    """Generates and caches the semantic vectors for the template descriptions."""
+    print("--- 🛠️ TEMPLATE WIZARD SETUP: Generating Semantic Vectors ---")
+
+    # STEP 1: Load Template Data
+    templates = load_template_file()
+    if not templates:
+        print(
+            f"{Colors.YELLOW}No templates found in JSON. Nothing to process.{Colors.END}"
+        )
+        return
+
+    # Create the corpus: combining name and description is best for semantic search
+    corpus = [f"{t['name']}. {t['description']}" for t in templates]
+    template_names = [t["name"] for t in templates]
+
+    print(
+        f"Loaded {len(templates)} templates. Initializing Sentence Transformer Model ('{MODEL_NAME}')..."
     )
 
-    # 2. Map matches back to the original structured dictionary items
-    results = []
-    seen_names = set()
-    for match_string, score in best_matches:
-        original_template = search_targets[match_string]
+    try:
+        # STEP 2: Load Model and Generate Embeddings
+        model = SentenceTransformer(MODEL_NAME)
 
-        # Use the 'name' (identifier) as the unique key
-        if original_template["name"] not in seen_names:
-            results.append(
+        print(f"Model loaded. Generating {len(corpus)} embeddings...")
+
+        # Encode the corpus texts into high-dimensional vectors
+        corpus_embeddings = model.encode(corpus, convert_to_tensor=False)
+
+        # STEP 3: Cache Vectors to Disk
+        with open(VECTOR_CACHE_FILE, "wb") as f:
+            pickle.dump(
                 {
-                    "score": score,
-                    "system": original_template["system"],
-                    "name": original_template["name"],
-                    "description": original_template["description"],
-                }
+                    "names": template_names,
+                    "vectors": corpus_embeddings,
+                    "model": MODEL_NAME,
+                },
+                f,
             )
-            seen_names.add(original_template["name"])
 
+        print("\n" + "=" * 70)
+        print(
+            f"{Colors.GREEN}{Colors.BOLD}✅ Setup Complete! Vector cache saved to '{VECTOR_CACHE_FILE}'.{Colors.END}{Colors.END}"
+        )
+        print(
+            f"You can now run searches: {Colors.YELLOW}python template_wizard_cli.py search 'academic report'{Colors.END}"
+        )
+        print("=" * 70)
+
+    except Exception as e:
+        print(f"\n{Colors.RED} Error during embedding or model load: {e}{Colors.END}")
+        print("Ensure 'sentence-transformers' and 'torch' are installed correctly.")
+
+
+# --- Subcommand 2: Search Logic ---
+
+
+def semantic_search(prompt, templates, template_names, template_vectors, model):
+    """
+    Performs semantic search using cached vectors and cosine similarity.
+    Returns ranked matches as full template data.
+    """
+    print(f"\n{Colors.BLUE}--- Semantic Search: Encoding Query ---{Colors.END}")
+
+    # 1. Encode the user's query
+    query_vector = model.encode([prompt], convert_to_tensor=False)[0]
+
+    # 2. Calculate cosine similarity between the query vector and all template vectors
+    # We transpose the vectors matrix for efficient calculation
+    template_vectors_matrix = np.array(template_vectors)
+
+    # Calculate scores (Cosine Distance is 1 - Cosine Similarity)
+    # The cosine function from scipy takes two arrays and returns the distance.
+    distances = [
+        cosine(query_vector, template_vectors_matrix[i])
+        for i in range(template_vectors_matrix.shape[0])
+    ]
+    scores = 1 - np.array(distances)
+
+    # 3. Filter and structure results
+    results = []
+    for i, score in enumerate(scores):
+        if score >= MIN_SEMANTIC_SCORE:
+            template_name = template_names[i]
+
+            # Find the full template object using the name
+            # We use next() for quick lookup based on name
+            full_template = next(
+                (t for t in templates if t["name"] == template_name), None
+            )
+
+            if full_template:
+                results.append(
+                    {
+                        "score": int(score * 100),  # Scale to 0-100 for display
+                        "system": full_template["system"],
+                        "name": full_template["name"],
+                        "description": full_template["description"],
+                    }
+                )
+
+    # Sort and return
     return sorted(results, key=lambda x: x["score"], reverse=True)
 
 
-def call_llm_fallback(prompt, templates):
+def selection_menu(matches, prompt):
     """
-    Simulates the LLM fallback step by generating a prompt for the LLM.
-
-    In a real application (e.g., using Gemini API or Ollama), this function
-    would execute an external API call and return the selected template name.
+    Uses the fzf utility to provide a highly interactive, searchable selection TUI.
     """
-    print("\n--- LLM FALLBACK: Generating Prompt ---")
+    if not matches:
+        return None
 
-    # Generate the list of available templates for the LLM
-    template_list = "\n".join(
-        [
-            f"- {t['name']} (System: {t['system']}, Purpose: {t['description']})"
-            for t in templates
-        ]
+    # 1. Format data for fzf input (Tab-separated values)
+    fzf_input = []
+    # Header line must be included first for fzf to use it
+    fzf_input.append(
+        f"{Colors.BOLD}{'SCORE':<5} | {'SYSTEM':<7} | {'TEMPLATE NAME':<40} | DESCRIPTION{Colors.END}"
     )
 
-    llm_prompt = f"""
-    The user needs a document template based on the following query: '{prompt}'.
-    
-    Select the single most suitable template identifier (the 'name' field) 
-    from the list below. If no template is suitable, respond ONLY with 'NONE'.
+    for item in matches:
+        # Ensure description is clean and formatted for the fzf column
+        desc = item["description"].replace("\n", " ")
+        line = (
+            f"{Colors.YELLOW}{item['score']:<5}{Colors.END} | "
+            f"{item['system'].capitalize():<7} | "
+            f"{item['name']:<40} | "
+            f"{desc}"
+        )
+        fzf_input.append(line)
 
-    Available Templates:
-    {template_list}
+    # 2. Define the fzf command and arguments
+    # We use a placeholder for the color scheme to ensure portability
+    fzf_command = [
+        "fzf",
+        "--layout=reverse",
+        "--header",
+        f"Select template for: {prompt} | (Score > {MIN_SEMANTIC_SCORE * 100}%)",
+        "--ansi",
+        "--delimiter",
+        "|",
+        "--with-nth",
+        "1..3",  # Show Score, System, and Name in the main interface
+        "--header-lines",
+        "1",  # Treat the first line of output as a header
+        "--prompt",
+        "Template > ",
+    ]
 
-    Your final response MUST be ONLY the template identifier (the 'name') or NONE.
-    """
+    # 3. Execute fzf and capture output
+    try:
+        process = subprocess.run(
+            fzf_command,
+            input="\n".join(fzf_input).encode("utf-8"),
+            capture_output=True,
+            check=False,
+        )
 
-    print(
-        "\n[NOTE: In a live environment, the following prompt would be sent to the LLM:]"
-    )
-    print("-" * 50)
-    print(llm_prompt)
-    print("-" * 50)
+        selected_line = process.stdout.decode("utf-8").strip()
 
-    # --- PLACEHOLDER FOR LLM RESPONSE ---
-    # For demonstration, we simulate a 'NONE' response to proceed to manual selection.
-    # Replace this section with your actual LLM integration (e.g., using the Gemini API).
+        if not selected_line:
+            return None
 
-    print("No actual LLM call was executed (placeholder response is 'NONE').")
-    return "NONE"
+        # 4. Parse the selected line to get the template name
+        # The selected line contains the full '|' separated string. We extract the NAME field (column 3)
+        parts = selected_line.split("|")
+
+        # The third part (index 2) is the Name field
+        # We need to strip the ANSI codes and whitespace
+        name_with_ansi = parts[2].strip()
+
+        # Simple regex to remove ANSI codes if necessary (fzf generally handles this well)
+        # However, since the name is unique, we find the match based on the name key.
+
+        # Extract the clean name by stripping color codes and spaces
+        selected_name = (
+            name_with_ansi.replace(Colors.GREEN, "")
+            .replace(Colors.YELLOW, "")
+            .replace(Colors.END, "")
+            .strip()
+        )
+
+        # Find the full original template object using the unique name
+        return next(item for item in matches if item["name"] == selected_name)
+
+    except FileNotFoundError:
+        print(f"{Colors.RED}Error: 'fzf' command not found.{Colors.END}")
+        print(
+            f"Please install fzf (e.g., {Colors.YELLOW}brew install fzf{Colors.END})."
+        )
+        return None
 
 
 def initialize_template(template_data):
-    """Initializes the document using the correct CLI tool."""
+    """Initializes the document using the correct CLI tool (typst or quarto)."""
     system = template_data["system"]
     template_name = template_data["name"]
 
@@ -123,94 +288,122 @@ def initialize_template(template_data):
 
     # --- Determine the command based on the system ---
     if system == "typst":
-        # Typst init command: typst init @preview/template_name output_dir
         cmd = ["typst", "init", template_name, output_dir]
     elif system == "quarto":
-        # Quarto use template command: quarto use template github/path output_dir
-        # Note: quarto use template automatically fetches the latest version
         cmd = ["quarto", "use", "template", template_name, output_dir]
     else:
-        print(f"Error: Unknown system '{system}'. Initialization aborted.")
+        print(
+            f"{Colors.RED}Error: Unknown system '{system}'. Initialization aborted.{Colors.END}"
+        )
         return
 
-    print(f"\n✨ Initializing document using {system}...")
-    print(f"Command: {' '.join(cmd)}")
+    print(f"\n{Colors.BLUE}✨ Initializing document using {system}...{Colors.END}")
+    print(f"{Colors.YELLOW}Command: {' '.join(cmd)}{Colors.END}")
 
     try:
         subprocess.run(cmd, check=True)
-        print("\n" + "=" * 60)
-        print(f"✅ Success! Project '{output_dir}' created.")
-        print(f"To start working in VS Code: code ./{output_dir}")
-        print("=" * 60)
+        print("\n" + "=" * 70)
+        print(
+            f"{Colors.GREEN}{Colors.BOLD}✅ Success! Project '{output_dir}' created.{Colors.END}{Colors.END}"
+        )
+        print(
+            f"To start working in VS Code: {Colors.YELLOW}code ./{output_dir}{Colors.END}"
+        )
+        print("=" * 70)
     except subprocess.CalledProcessError as e:
-        print("\n❌ Initialization failed (CLI error).")
+        print(f"\n{Colors.RED}❌ Initialization failed (CLI error).{Colors.END}")
         print(f"Ensure that '{system}' is installed and accessible in your PATH.")
         print(f"Error details: {e}")
     except FileNotFoundError:
-        print("\n❌ Initialization failed.")
+        print(f"\n{Colors.RED}❌ Initialization failed.{Colors.END}")
         print(
             f"The command '{system}' was not found. Please install the necessary CLI tool."
         )
 
 
-# --- Main Execution ---
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: python template_wizard.py <document description>")
-        sys.exit(1)
+def run_search(args):
+    """Entry point for the 'search' subcommand."""
 
-    user_prompt = " ".join(sys.argv[1:]).strip()
-    templates = load_local_templates()
+    if not args.prompt:
+        print(f"{Colors.RED}Error: A search prompt is required.{Colors.END}")
+        print(
+            f"Usage: {Colors.YELLOW}python template_wizard_cli.py search 'thesis report'{Colors.END}"
+        )
+        return
 
-    # 1. Fuzzy Match Check
-    matches = fuzzy_match_template(user_prompt, templates)
+    # Load data, model, and vectors
+    templates, template_names, template_vectors, model = load_template_vectors()
+
+    # 1. Semantic Matching
+    matches = semantic_search(
+        args.prompt, templates, template_names, template_vectors, model
+    )
 
     if matches:
         print(
-            f"Found {len(matches)} highly relevant match(es) for '{user_prompt}' (Score > {FUZZY_THRESHOLD}):"
+            f"{Colors.GREEN}Found {len(matches)} highly relevant template(s) above {MIN_SEMANTIC_SCORE * 100}% relevance.{Colors.END}"
         )
 
-        # Display the best match and prompt for confirmation
-        best_match = matches[0]
+        # 2. Interactive Selection (FZF)
+        selected_template = selection_menu(matches, args.prompt)
 
-        print("\n" + "-" * 60)
-        print(f"BEST MATCH (Score {best_match['score']}%):")
-        print(f"System: {best_match['system'].capitalize()}")
-        print(f"Template Name: {best_match['name']}")
-        print(f"Description: {best_match['description']}")
-        print("-" * 60)
-
-        # Simple confirmation loop
-        selection = (
-            input(f"Use '{best_match['name']}'? (Y/n/l for list): ").strip().lower()
-        )
-
-        if selection == "y" or selection == "":
-            initialize_template(best_match)
-        elif selection == "l":
-            print("\n--- Detailed Template List ---")
-            for i, item in enumerate(matches, 1):
-                print(
-                    f"({item['score']}%) [{item['system'].capitalize()}] {item['name']}: {item['description']}"
-                )
-            print(
-                "\nIf you want to use one, run the wizard again with a more specific prompt."
-            )
+        if selected_template:
+            initialize_template(selected_template)
         else:
-            print("Template selection aborted.")
+            print(f"{Colors.YELLOW}Template selection cancelled.{Colors.END}")
 
     else:
-        # 2. LLM Fallback (Currently simulates a failed match)
-        print(f"\nNo strong fuzzy match found for '{user_prompt}'.")
-        llm_suggestion = call_llm_fallback(user_prompt, templates)
+        print(
+            f"\n{Colors.RED}❌ Semantic search failed to find a template above the score threshold ({MIN_SEMANTIC_SCORE * 100}%).{Colors.END}"
+        )
+        print("Try a more detailed query (e.g., 'academic thesis paper in APA style').")
 
-        if llm_suggestion and llm_suggestion != "NONE":
-            # This branch would require fetching the full template data object
-            # based on the LLM's suggested name.
-            print(f"LLM suggested '{llm_suggestion}', attempting initialization...")
-            # For simplicity, if LLM returns a name, we'd proceed assuming the script can find its metadata
-            pass
-        else:
-            print(
-                "\n❌ Failed to find a suitable template automatically. Please try a different query or manually choose from the catalog."
-            )
+
+# --- Main Argument Parser ---
+
+
+def main():
+    """Main function to handle CLI arguments."""
+    parser = argparse.ArgumentParser(
+        description=f"{Colors.BOLD}Typst/Quarto Template Wizard CLI Tool{Colors.END}",
+        formatter_class=argparse.RawTextHelpFormatter,
+        epilog="""
+Usage Examples:
+  # 1. Setup (Run once after installing new templates.json):
+  python template_wizard_cli.py setup
+  
+  # 2. Search for a template:
+  python template_wizard_cli.py search "professional CV for job application"
+  
+  # 3. Search for a specific academic paper format:
+  python template_wizard_cli.py search "IEEE conference paper"
+        """,
+    )
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    # Subcommand for SETUP
+    parser_setup = subparsers.add_parser(
+        "setup",
+        help=f"Generates semantic vectors from {TEMPLATE_FILE} and caches them to {VECTOR_CACHE_FILE}.",
+    )
+    parser_setup.set_defaults(func=setup_vectors)
+
+    # Subcommand for SEARCH
+    parser_search = subparsers.add_parser(
+        "search",
+        help="Performs semantic search using the cached vectors and launches an interactive FZF selector.",
+    )
+    parser_search.add_argument(
+        "prompt",
+        type=str,
+        help="The natural language query describing the desired document.",
+    )
+    parser_search.set_defaults(func=run_search)
+
+    # Execute the appropriate function
+    args = parser.parse_args()
+    args.func(args)
+
+
+if __name__ == "__main__":
+    main()
