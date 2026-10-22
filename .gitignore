@@ -5,6 +5,13 @@
 
 # Python cache
 **/__pycache__*
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
 
 # Environment files
 **/.env*
@@ -12,16 +19,6 @@
 
 # System files
 .DS_Store
-**/.DS_Store
 
 # Virtual environments
-**/.venv
-=======
-.venv
-.venv/*
-__pychache__
-
-**/.venv
-**/.venv/*
-**/.DS_Store
-**/__pycache__
+.venv/
