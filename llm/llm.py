@@ -6,6 +6,7 @@
 """Stateless gateway client. HTTP transport is provided by xh."""
 
 import argparse
+import base64
 import contextlib
 import json
 import math
@@ -19,12 +20,34 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 DEFAULT_BASE = "https://code.nothing.pink/v1"
+CONFIG_DIR = Path.home() / ".config" / "llm"
+CONFIG_FILE = CONFIG_DIR / "config.toml"
+DEFAULT_MODEL = "coding:free"
 DEFAULT_SYSTEM = (
     "Answer directly and clearly. Match the level of detail to the request; "
     "avoid filler, unnecessary repetition, and stock AI phrasing.\n\n"
     "Use Markdown with language-tagged code fences. Avoid HTML and wide tables. "
     "Follow explicitly requested output formats exactly, without added commentary."
 )
+SHELL_SYSTEM = r"Given a user request, output ONLY a single bash command on the first line and a brief explanation on the second line. Format:\n$ COMMAND\n> EXPLANATION"
+
+
+def config_model() -> str:
+    """Read default model from config file, fall back to DEFAULT_MODEL."""
+    try:
+        import tomllib
+    except ImportError:
+        return DEFAULT_MODEL
+    if not CONFIG_FILE.is_file():
+        return DEFAULT_MODEL
+    try:
+        with CONFIG_FILE.open("rb") as f:
+            data = tomllib.load(f)
+        return str(data.get("model", DEFAULT_MODEL))
+    except (OSError, ValueError, TypeError, KeyError):
+        return DEFAULT_MODEL
+
+
 ENDPOINTS = {
     "chat": "chat/completions",
     "responses": "responses",
@@ -67,7 +90,12 @@ def parser():
         "Use --prompt/--file to override detection. No inputs reads stdin. "
         "Credentials: LLM_API_KEY, then NOTHING_API_KEY/NOTHING_GATEWAY_API_KEY "
         "(gateway only). --xh never prints a key. No history or automatic retries. "
-        "Exit codes: 0 success; 1 failure; 2 usage error; 3 incomplete/truncated answer.",
+        "Exit codes: 0 success; 1 failure; 2 usage error; 3 incomplete/truncated answer.\n\n"
+        "Flags:\n"
+        "  -s/--shell   Shell command suggestion mode (prints command + explanation)\n"
+        "  -i/--image   Attach image file(s) (repeatable; chat API only)\n"
+        "  -S/--system  Override system prompt ('' disables it)\n"
+        "  -m/--model   Model (default from ~/.config/llm/config.toml or coding:free)",
     )
     p.add_argument(
         "inputs", nargs="*", action=InputAction, help="prompt text, file path, or -"
@@ -78,7 +106,12 @@ def parser():
         action=InputAction,
         help="required UTF-8 file (repeatable; - for stdin)",
     )
-    p.add_argument("-m", "--model", default="big-pickle")
+    p.add_argument(
+        "-m",
+        "--model",
+        default=config_model(),
+        help=f"model name (default from config or {DEFAULT_MODEL})",
+    )
     p.add_argument("-a", "--api", choices=ENDPOINTS, default="chat")
     p.add_argument(
         "--base-url",
@@ -91,13 +124,18 @@ def parser():
         help="direct key; prefer environment variables (argv may be visible)",
     )
     p.add_argument(
-        "-s",
+        "-S",
         "--system",
         help="replace interactive default system prompt ('' disables it)",
     )
     p.add_argument("--timeout", type=float, default=90)
     p.add_argument("--max-tokens", type=int)
     p.add_argument("--temperature", type=float)
+    p.add_argument(
+        "--timings",
+        action="store_true",
+        help="report client setup, first text, first render and total timing to stderr (excludes uv startup)",
+    )
     p.add_argument("--json", action="store_true", help="print complete JSON response")
     p.add_argument(
         "-o",
@@ -105,7 +143,32 @@ def parser():
         type=Path,
         help="save plain text/JSON (refuses existing files)",
     )
-    p.add_argument("--stream", action="store_true", help="stream generated text")
+    p.add_argument(
+        "-i",
+        "--image",
+        action="append",
+        default=[],
+        help="image file to attach (repeatable; chat API only)",
+    )
+    p.add_argument(
+        "-s",
+        "--shell",
+        action="store_true",
+        help="shell command suggestion mode (prints command + explanation)",
+    )
+    streaming = p.add_mutually_exclusive_group()
+    streaming.add_argument(
+        "--stream",
+        action="store_true",
+        default=None,
+        help="stream generated text (default for terminal output)",
+    )
+    streaming.add_argument(
+        "--no-stream",
+        dest="stream",
+        action="store_false",
+        help="wait for the complete response before displaying it",
+    )
     p.add_argument(
         "-x",
         "--xh",
@@ -164,6 +227,8 @@ def parse_args(argv=None):
         return args
     if args.json and args.stream:
         p.error("--json and --stream cannot be combined")
+    if args.stream is None:
+        args.stream = sys.stdout.isatty() and not args.json
     if not math.isfinite(args.timeout) or args.timeout <= 0:
         p.error("--timeout must be positive and finite")
     if args.max_tokens is not None and args.max_tokens <= 0:
@@ -228,14 +293,34 @@ def render_markdown(args):
 def payload(args, text):
     body = {"model": args.model, "stream": args.stream}
     system = args.system
-    if system is None and render_markdown(args):
+    if args.shell:
+        system = SHELL_SYSTEM
+    elif system is None and render_markdown(args):
         system = DEFAULT_SYSTEM
     if args.api == "responses":
         body["input"] = text
         if system:
             body["instructions"] = system
     else:
-        messages = [{"role": "user", "content": text}]
+        if args.image and args.api != "chat":
+            raise ValueError("--image is only supported with chat API (use -a chat)")
+        user_content: list = [{"type": "text", "text": text}]
+        for img_path in args.image:
+            p = Path(img_path)
+            if not p.is_file():
+                raise ValueError(f"image not found: {img_path}")
+            mime = {
+                ".png": "image/png",
+                ".jpg": "image/jpeg",
+                ".jpeg": "image/jpeg",
+                ".gif": "image/gif",
+                ".webp": "image/webp",
+            }.get(p.suffix.lower(), "image/jpeg")
+            b64 = base64.b64encode(p.read_bytes()).decode()
+            user_content.append(
+                {"type": "image_url", "image_url": {"url": f"data:{mime};base64,{b64}"}}
+            )
+        messages = [{"role": "user", "content": user_content}]
         if system:
             if args.api == "messages":
                 body["system"] = system
@@ -335,6 +420,31 @@ def text_value(value):
     if not isinstance(value, str):
         raise ProtocolError("expected text in API response")
     return value
+
+
+def decode_response(raw):
+    raw = raw.lstrip("\ufeff")
+    if not raw.strip():
+        raise ProtocolError(
+            "gateway returned an empty response body; expected JSON "
+            "(the HTTP client reported success)"
+        )
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError as exc:
+        prefix = raw.lstrip().lower()
+        if prefix.startswith(("data:", "event:", ":")):
+            raise ProtocolError(
+                "gateway returned an event stream for a non-streaming request; try --stream"
+            ) from None
+        if prefix.startswith(("<!doctype html", "<html", "<head", "<body")):
+            raise ProtocolError(
+                "gateway returned HTML instead of JSON; check for a gateway, proxy, or login-page response"
+            ) from None
+        raise ProtocolError(
+            f"gateway returned invalid JSON (line {exc.lineno}, column {exc.colno}); "
+            "response body omitted from diagnostics"
+        ) from None
 
 
 def response_status(api, data):
@@ -445,36 +555,45 @@ def stream_text(api, lines, status=None):
         )
 
 
-def display(chunks, markdown):
+def display(chunks, markdown, streaming=False, metrics=None):
     text = ""
     if markdown:
         from rich.console import Console
         from rich.live import Live
         from rich.markdown import Markdown
 
+        console = Console()
+        if not streaming:
+            text = "".join(chunks)
+            console.print(Markdown(text))
+            return text
+
         with Live(
-            "",
-            console=Console(),
+            Markdown(""),
+            console=console,
             refresh_per_second=8,
+            auto_refresh=False,
             vertical_overflow="ellipsis",
-            transient=True,
+            transient=False,
         ) as live:
-            last_update = 0.0
+            last_update = None
             for chunk in chunks:
                 text += chunk
-                if time.monotonic() - last_update >= 0.125:
-                    live.update(Markdown(text))
+                now = time.monotonic()
+                if last_update is None or now - last_update >= 0.125:
+                    live.update(Markdown(text), refresh=True)
+                    if metrics is not None:
+                        metrics.setdefault("render", time.perf_counter())
                     last_update = time.monotonic()
-            # Rich switches to visible overflow during stop(), even for a
-            # transient display. Clear first to avoid an extra full-height copy.
-            live.update("", refresh=True)
-        # The transient preview stays within the viewport; print the full answer
-        # once at completion so long answers remain available in scrollback.
-        Console().print(Markdown(text))
+            # Live's final refresh preserves the answer rather than clearing
+            # and printing a second copy. Include any throttled trailing text.
+            live.update(Markdown(text), refresh=False)
     else:
         for chunk in chunks:
             text += chunk
             print(chunk, end="", flush=True)
+            if metrics is not None:
+                metrics.setdefault("render", time.perf_counter())
         if text and not text.endswith("\n"):
             print()
     return text
@@ -536,6 +655,14 @@ def run(args, body, key):
         body_file.chmod(0o600)
         cmd = command(args) + ["--session-read-only=" + str(headers)]
         cmd.remove("--ignore-stdin")
+        metrics = args.metrics
+        metrics["launch"] = time.perf_counter()
+
+        def observed_text(lines, status):
+            for chunk in stream_text(args.api, lines, status):
+                metrics.setdefault("text", time.perf_counter())
+                yield chunk
+
         with (
             body_file.open("rb") as source,
             tempfile.TemporaryFile(mode="w+") as errors,
@@ -557,7 +684,10 @@ def run(args, body, key):
                 if args.stream:
                     try:
                         result = display(
-                            stream_text(args.api, proc.stdout, status), markdown
+                            observed_text(proc.stdout, status),
+                            markdown,
+                            streaming=True,
+                            metrics=metrics,
                         )
                     except ValueError as exc:
                         stream_error = exc
@@ -567,6 +697,7 @@ def run(args, body, key):
                         stop_process(proc)
                 else:
                     raw = proc.stdout.read()
+                    metrics["body"] = time.perf_counter()
                 code = proc.wait()
                 if code and (stream_error is None or code > 0):
                     errors.seek(0)
@@ -589,7 +720,7 @@ def run(args, body, key):
                 if stream_error:
                     raise stream_error
                 if not args.stream:
-                    data = object_value(json.loads(raw))
+                    data = object_value(decode_response(raw))
                     if args.json:
                         result = json.dumps(data, indent=2, ensure_ascii=False)
                         # Do not require text or a particular nested schema to
@@ -614,8 +745,31 @@ def run(args, body, key):
                 stop_process(proc)
 
 
+def report_timings(metrics):
+    start = metrics["start"]
+    launch = metrics.get("launch")
+    text = metrics.get("text")
+    render = metrics.get("render")
+    fields = []
+    if launch is not None:
+        fields.append(f"client-setup={launch - start:.3f}s")
+    if text is not None and launch is not None:
+        fields.append(f"first-text-after-launch={text - launch:.3f}s")
+    if render is not None and text is not None:
+        fields.append(f"first-render-after-text={render - text:.3f}s")
+    if "body" in metrics and launch is not None:
+        fields.append(f"full-body-after-launch={metrics['body'] - launch:.3f}s")
+    fields.append(f"total={time.perf_counter() - start:.3f}s")
+    print(
+        "llm timings (excludes uv/Python startup): " + ", ".join(fields),
+        file=sys.stderr,
+    )
+
+
 def main(argv=None):
+    started = time.perf_counter()
     args = parse_args(argv)
+    args.metrics = {"start": started}
     if args.nu:
         print(NU_HELP)
         return 0
@@ -649,6 +803,9 @@ def main(argv=None):
         return 1
     except KeyboardInterrupt:
         return 130
+    finally:
+        if args.timings and not args.xh:
+            report_timings(args.metrics)
 
 
 if __name__ == "__main__":

@@ -1,14 +1,18 @@
 """Run with python3 -m unittest discover -s llm/tests -v from the scripts repo."""
 
 import contextlib
+import fcntl
+import importlib.util
 import io
 import json
 import os
 import pty
 import runpy
 import select
+import struct
 import subprocess
 import tempfile
+import termios
 import threading
 import time
 import unittest
@@ -22,6 +26,40 @@ M = runpy.run_path(str(CLI))
 
 
 class UnitTests(unittest.TestCase):
+    @unittest.skipUnless(
+        importlib.util.find_spec("rich"), "run with uv --with rich for rendering test"
+    )
+    def test_live_markdown_is_immediate_throttled_and_persistent(self):
+        from rich.console import Console
+        from rich.markdown import Markdown
+
+        console = Console(file=io.StringIO(), width=40, height=8, force_terminal=True)
+        with (
+            patch("rich.console.Console", return_value=console),
+            patch("rich.live.Live") as live_class,
+            patch("time.monotonic", side_effect=[0.0, 0.0, 0.01, 0.2, 0.2, 0.21]),
+            patch.object(console, "print") as final_print,
+        ):
+            metrics = {}
+            text = M["display"](
+                ["first", " second", " third", " last"], True, True, metrics
+            )
+            updates = (
+                live_class.return_value.__enter__.return_value.update.call_args_list
+            )
+            self.assertFalse(live_class.call_args.kwargs["transient"])
+            self.assertFalse(live_class.call_args.kwargs["auto_refresh"])
+            self.assertEqual(len(updates), 3)
+            self.assertTrue(all(isinstance(call.args[0], Markdown) for call in updates))
+            self.assertEqual(updates[0].args[0].markup, "first")
+            self.assertTrue(updates[0].kwargs["refresh"])
+            self.assertEqual(updates[1].args[0].markup, "first second third")
+            self.assertEqual(updates[2].args[0].markup, text)
+            self.assertFalse(updates[2].kwargs["refresh"])
+            final_print.assert_not_called()
+            self.assertIn("render", metrics)
+            self.assertEqual(text, "first second third last")
+
     def test_order_and_overrides(self):
         args = M["parse_args"](
             [
@@ -80,13 +118,32 @@ class UnitTests(unittest.TestCase):
             self.assertNotIn("instructions", body)
             if api == "chat":
                 self.assertEqual(body["messages"][0]["role"], "user")
-        args = M["parse_args"](["-s", ""])
+        args = M["parse_args"](["-S", ""])
         with patch("sys.stdout.isatty", return_value=True):
             self.assertEqual(len(M["payload"](args, "hello")["messages"]), 1)
+
+    def test_streaming_defaults_and_overrides(self):
+        for terminal in (False, True):
+            for flags, expected in (
+                ([], terminal),
+                (["--plain"], terminal),
+                (["--json"], False),
+                (["--no-stream"], False),
+                (["--stream"], True),
+                (["--json", "--no-stream"], False),
+            ):
+                with (
+                    self.subTest(terminal=terminal, flags=flags),
+                    patch("sys.stdout.isatty", return_value=terminal),
+                ):
+                    args = M["parse_args"](flags)
+                    self.assertEqual(args.stream, expected)
+                    self.assertEqual(M["payload"](args, "hello")["stream"], expected)
 
     def test_validation(self):
         for argv in (
             ["--stream", "--json"],
+            ["--stream", "--no-stream"],
             ["--timeout", "nan"],
             ["--max-tokens", "0"],
             ["--temperature", "-1"],
@@ -138,6 +195,7 @@ class UnitTests(unittest.TestCase):
 
 class Handler(BaseHTTPRequestHandler):
     requests: ClassVar[list] = []
+    paced_done: ClassVar[threading.Event] = threading.Event()
 
     def log_message(self, *_):
         pass
@@ -151,6 +209,31 @@ class Handler(BaseHTTPRequestHandler):
             self.wfile.write(b'{"error":{"message":"rate limited"}}')
             return
         api = self.path.rsplit("/", 1)[-1]
+        if body["model"] == "paced":
+            self.paced_done.clear()
+            self.send_response(200)
+            self.send_header("Content-Type", "text/event-stream")
+            self.end_headers()
+            for n in range(40):
+                event = {"choices": [{"delta": {"content": f"hello line-{n:03}\n\n"}}]}
+                self.wfile.write(("data: " + json.dumps(event) + "\n\n").encode())
+                self.wfile.flush()
+                time.sleep(0.03)
+            self.wfile.write(b"data: [DONE]\n\n")
+            self.paced_done.set()
+            return
+        if body["model"] in ("empty", "html", "sse-unexpected", "bom", "invalid-json"):
+            response = {
+                "empty": b"",
+                "html": b"<!DOCTYPE html><html>gateway error</html>",
+                "sse-unexpected": b'data: {"choices":[]}\n\n',
+                "bom": b'\xef\xbb\xbf{"choices":[{"message":{"content":"hello"}}]}',
+                "invalid-json": b"private upstream diagnostic text",
+            }[body["model"]]
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(response)
+            return
         if body["model"] in ("array", "badshape", "tool", "incomplete"):
             response = {
                 "array": [],
@@ -303,7 +386,7 @@ class IntegrationTests(unittest.TestCase):
                     headers = {
                         key.lower(): value for key, value in received_headers.items()
                     }
-                    self.assertEqual(body["model"], "big-pickle")
+                    self.assertEqual(body["model"], "coding:free")
                     self.assertEqual(
                         headers.get(
                             "x-api-key" if api == "messages" else "authorization"
@@ -312,6 +395,25 @@ class IntegrationTests(unittest.TestCase):
                         if api == "messages"
                         else "Bearer dummy-local-test",
                     )
+
+    def test_timings_are_opt_in_and_stderr_only(self):
+        result = self.invoke("--stream", "--timings", "hello")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout, "**hello**\n")
+        for field in (
+            "client-setup=",
+            "first-text-after-launch=",
+            "first-render-after-text=",
+            "total=",
+        ):
+            self.assertIn(field, result.stderr)
+        self.assertNotIn("dummy-local-test", result.stderr)
+        buffered = self.invoke("--json", "--timings", "hello")
+        self.assertEqual(buffered.returncode, 0, buffered.stderr)
+        self.assertIn("full-body-after-launch=", buffered.stderr)
+        self.assertIsInstance(json.loads(buffered.stdout), dict)
+        quiet = self.invoke("hello")
+        self.assertNotIn("llm timings", quiet.stderr)
 
     def test_failure(self):
         for options in ([], ["--stream"]):
@@ -330,6 +432,22 @@ class IntegrationTests(unittest.TestCase):
             self.assertEqual(result.returncode, code, result.stderr)
             self.assertIsInstance(json.loads(result.stdout), dict)
             self.assertNotIn("Traceback", result.stderr)
+
+    def test_non_json_gateway_diagnostics(self):
+        for model, message in (
+            ("empty", "empty response body"),
+            ("html", "HTML instead of JSON"),
+            ("sse-unexpected", "try --stream"),
+            ("invalid-json", "invalid JSON"),
+        ):
+            result = self.invoke("-m", model, "hello")
+            self.assertEqual(result.returncode, 1, result.stderr)
+            self.assertIn(message, result.stderr)
+            self.assertNotIn("Traceback", result.stderr)
+            self.assertNotIn("private upstream diagnostic text", result.stderr)
+        result = self.invoke("-m", "bom", "hello")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout, "hello\n")
 
     def test_malformed_shapes(self):
         for model in ("array", "badshape"):
@@ -387,13 +505,19 @@ class IntegrationTests(unittest.TestCase):
         )
         self.assertEqual(executed.returncode, 0, executed.stderr)
         self.assertIn("hello", executed.stdout)
+        content = Handler.requests[-1][2]["messages"][-1]["content"]
+        if isinstance(content, list):
+            content = "".join(
+                item.get("text", "") for item in content if item.get("type") == "text"
+            )
         self.assertEqual(
-            Handler.requests[-1][2]["messages"][-1]["content"],
+            content,
             "quotes ' \" $(false)\nUnicode: café",
         )
 
-    def terminal_output(self, model="big-pickle"):
+    def terminal_output(self, model="coding:free"):
         master, slave = pty.openpty()
+        fcntl.ioctl(slave, termios.TIOCSWINSZ, struct.pack("HHHH", 8, 40, 0, 0))
         env = {
             **os.environ,
             "LLM_API_KEY": "dummy-local-test",
@@ -402,7 +526,7 @@ class IntegrationTests(unittest.TestCase):
         }
         try:
             with subprocess.Popen(
-                [str(CLI), "--base-url", self.base, "--stream", "-m", model, "hello"],
+                [str(CLI), "--base-url", self.base, "-m", model, "hello"],
                 stdin=subprocess.DEVNULL,
                 stdout=slave,
                 stderr=subprocess.PIPE,
@@ -411,6 +535,7 @@ class IntegrationTests(unittest.TestCase):
                 os.close(slave)
                 slave = None
                 output = b""
+                saw_partial = False
                 deadline = time.monotonic() + 10
                 while proc.poll() is None:
                     if time.monotonic() >= deadline:
@@ -419,13 +544,23 @@ class IntegrationTests(unittest.TestCase):
                         self.fail("terminal CLI did not exit within 10 seconds")
                     if select.select([master], [], [], 5)[0]:
                         try:
-                            output += os.read(master, 65536)
+                            received = os.read(master, 65536)
+                            output += received
+                            if (
+                                model == "paced"
+                                and received
+                                and not Handler.paced_done.is_set()
+                            ):
+                                saw_partial = True
                         except OSError:
                             break
                 _, errors = proc.communicate(timeout=10)
                 self.assertEqual(proc.returncode, 0, errors.decode())
                 self.assertIn(b"hello", output)
+                if model == "paced":
+                    self.assertTrue(saw_partial, "output was buffered until completion")
             body = Handler.requests[-1][2]
+            self.assertTrue(body["stream"])
             self.assertEqual(body["messages"][0]["content"], M["DEFAULT_SYSTEM"])
             return output
         finally:
@@ -436,10 +571,15 @@ class IntegrationTests(unittest.TestCase):
     def test_real_terminal_streaming(self):
         self.terminal_output()
 
-    def test_long_terminal_preview_does_not_duplicate_scrollback(self):
+    def test_long_terminal_live_does_not_duplicate_scrollback(self):
         output = self.terminal_output("long")
         self.assertEqual(output.count(b"line-119"), 1)
         self.assertIn(b"line-000", output)
+
+    def test_paced_stream_uses_live_markdown_without_alternate_screen(self):
+        output = self.terminal_output("paced")
+        self.assertNotIn(b"\x1b[?1049", output)
+        self.assertIn(b"line-039", output)
 
     def test_output_and_json(self):
         with tempfile.TemporaryDirectory() as directory:
