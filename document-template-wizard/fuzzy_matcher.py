@@ -1,5 +1,7 @@
+#!/usr/bin/env python3
 import argparse
 import json
+import os
 import pickle
 import subprocess
 import sys
@@ -7,7 +9,7 @@ import sys
 import numpy as np
 from scipy.spatial.distance import cosine
 
-# NOTE: Ensure 'sentence-transformers' is installed: pip install sentence-transformers
+# NOTE: Ensure 'sentence-transformers' and 'scipy' are installed: pip install sentence-transformers numpy scipy
 from sentence_transformers import SentenceTransformer
 
 # --- Configuration (Centralized Constants) ---
@@ -15,6 +17,12 @@ TEMPLATE_FILE = "templates.json"
 VECTOR_CACHE_FILE = "templates_vectors.pkl"
 MODEL_NAME = "all-MiniLM-L6-v2"
 MIN_SEMANTIC_SCORE = 0.5  # Cosine Similarity score threshold (50%)
+
+# --- Global Cache for Model ---
+# We use a dictionary to hold the SentenceTransformer instance after it's loaded.
+# This prevents redundant loading *if* the script were to call it multiple times
+# (though it only calls it once per run in the current design).
+GLOBAL_MODEL_CACHE = {}
 
 
 # --- ANSI Escape Codes for Terminal Colors and Formatting ---
@@ -52,7 +60,27 @@ def load_template_file():
         sys.exit(1)
 
 
-def load_template_vectors():
+def get_model(model_name):
+    """Loads and caches the Sentence Transformer model."""
+    if "model_instance" not in GLOBAL_MODEL_CACHE:
+        print(
+            f"[{Colors.YELLOW}Loading Semantic Model...{Colors.END}] This may take a few seconds."
+        )
+        try:
+            # This is the heavy operation that causes the startup delay.
+            GLOBAL_MODEL_CACHE["model_instance"] = SentenceTransformer(model_name)
+        except Exception as e:
+            print(
+                f"{Colors.RED}Fatal Error: Could not initialize model '{model_name}'.{Colors.END}"
+            )
+            print(
+                f"Ensure all dependencies (torch, transformers) are installed. Details: {e}"
+            )
+            sys.exit(1)
+    return GLOBAL_MODEL_CACHE["model_instance"]
+
+
+def load_vector_data():
     """Loads templates and vector cache for search mode."""
     templates = load_template_file()
 
@@ -60,8 +88,8 @@ def load_template_vectors():
         with open(VECTOR_CACHE_FILE, "rb") as f:
             cache = pickle.load(f)
 
-        # Load the model required for the vectors (downloads if not cached globally)
-        model = SentenceTransformer(cache["model"])
+        # Load the model, leveraging the new caching function
+        model = get_model(cache["model"])
 
         return templates, cache["names"], cache["vectors"], model
 
@@ -74,7 +102,7 @@ def load_template_vectors():
         )
         sys.exit(1)
     except Exception as e:
-        print(f"{Colors.RED}Error loading semantic model/cache: {e}{Colors.END}")
+        print(f"{Colors.RED}Error loading semantic cache: {e}{Colors.END}")
         sys.exit(1)
 
 
@@ -97,17 +125,13 @@ def setup_vectors(args):
     corpus = [f"{t['name']}. {t['description']}" for t in templates]
     template_names = [t["name"] for t in templates]
 
-    print(
-        f"Loaded {len(templates)} templates. Initializing Sentence Transformer Model ('{MODEL_NAME}')..."
-    )
+    # Get model instance (heavy load happens here)
+    model = get_model(MODEL_NAME)
+
+    print(f"Model loaded. Generating {len(corpus)} embeddings...")
 
     try:
-        # STEP 2: Load Model and Generate Embeddings
-        model = SentenceTransformer(MODEL_NAME)
-
-        print(f"Model loaded. Generating {len(corpus)} embeddings...")
-
-        # Encode the corpus texts into high-dimensional vectors
+        # STEP 2: Generate Embeddings
         corpus_embeddings = model.encode(corpus, convert_to_tensor=False)
 
         # STEP 3: Cache Vectors to Disk
@@ -126,13 +150,13 @@ def setup_vectors(args):
             f"{Colors.GREEN}{Colors.BOLD}✅ Setup Complete! Vector cache saved to '{VECTOR_CACHE_FILE}'.{Colors.END}{Colors.END}"
         )
         print(
-            f"You can now run searches: {Colors.YELLOW}python template_wizard_cli.py search 'academic report'{Colors.END}"
+            f"You can now run searches: {Colors.YELLOW}python template_wizard_cli.py academic report{Colors.END}"
         )
         print("=" * 70)
 
     except Exception as e:
-        print(f"\n{Colors.RED} Error during embedding or model load: {e}{Colors.END}")
-        print("Ensure 'sentence-transformers' and 'torch' are installed correctly.")
+        print(f"\n{Colors.RED} Error during embedding: {e}{Colors.END}")
+        print("Check template data integrity.")
 
 
 # --- Subcommand 2: Search Logic ---
@@ -186,7 +210,7 @@ def semantic_search(prompt, templates, template_names, template_vectors, model):
     return sorted(results, key=lambda x: x["score"], reverse=True)
 
 
-def selection_menu(matches, prompt):
+def interactive_fzf_selector(matches, prompt):
     """
     Uses the fzf utility to provide a highly interactive, searchable selection TUI.
     """
@@ -250,9 +274,6 @@ def selection_menu(matches, prompt):
         # The third part (index 2) is the Name field
         # We need to strip the ANSI codes and whitespace
         name_with_ansi = parts[2].strip()
-
-        # Simple regex to remove ANSI codes if necessary (fzf generally handles this well)
-        # However, since the name is unique, we find the match based on the name key.
 
         # Extract the clean name by stripping color codes and spaces
         selected_name = (
@@ -324,19 +345,15 @@ def initialize_template(template_data):
 def run_search(args):
     """Entry point for the 'search' subcommand."""
 
-    if not args.prompt:
-        print(f"{Colors.RED}Error: A search prompt is required.{Colors.END}")
-        print(
-            f"Usage: {Colors.YELLOW}python template_wizard_cli.py search 'thesis report'{Colors.END}"
-        )
-        return
+    # We use the prompt string passed in via the parsed arguments
+    prompt = args.prompt
 
     # Load data, model, and vectors
-    templates, template_names, template_vectors, model = load_template_vectors()
+    templates, template_names, template_vectors, model = load_vector_data()
 
     # 1. Semantic Matching
     matches = semantic_search(
-        args.prompt, templates, template_names, template_vectors, model
+        prompt, templates, template_names, template_vectors, model
     )
 
     if matches:
@@ -345,7 +362,7 @@ def run_search(args):
         )
 
         # 2. Interactive Selection (FZF)
-        selected_template = selection_menu(matches, args.prompt)
+        selected_template = interactive_fzf_selector(matches, prompt)
 
         if selected_template:
             initialize_template(selected_template)
@@ -362,47 +379,91 @@ def run_search(args):
 # --- Main Argument Parser ---
 
 
+class CustomHelpFormatter(argparse.RawTextHelpFormatter):
+    """Custom formatter for a cleaner, tabular help output."""
+
+    def _get_description(self):
+        return f"{Colors.BOLD}Typst/Quarto Template Wizard CLI Tool{Colors.END}"
+
+    def format_help(self):
+        help_message = super().format_help()
+
+        # Custom tabular usage example layout in the epilog
+        custom_epilog = f"""
+{Colors.BOLD}Usage & Commands:{Colors.END}
+{Colors.BLUE}{"  Action":<15} {"Command":<25} {"Description"}{Colors.END}
+{"-" * 80}
+{Colors.GREEN}{"  Setup":<15}{Colors.END} {Colors.YELLOW}setup{Colors.END:<25} Generates the semantic vector cache (run once).
+{Colors.GREEN}{"  Search (Default):":<15}{Colors.END} {Colors.YELLOW}[search] <query...>{Colors.END:<25} Performs semantic search and launches FZF TUI.
+{"-" * 80}
+{Colors.BOLD}Search Examples:{Colors.END}
+  {Colors.YELLOW}python fuzzy_matcher.py professional CV for job{Colors.END}
+  {Colors.YELLOW}python fuzzy_matcher.py search academic thesis in APA style{Colors.END}
+
+{Colors.BOLD}Configuration Files:{Colors.END}
+  {Colors.BLUE}{TEMPLATE_FILE:<20}{Colors.END} - Source file containing all template names and descriptions (JSON).
+  {Colors.BLUE}{VECTOR_CACHE_FILE:<20}{Colors.END} - Local cache of semantic vectors (generated via setup).
+        """
+
+        script_name = os.path.basename(sys.argv[0])
+        # Note: argparser automatically adds 'usage: scriptname [-h]'
+        # We replace the generic line and then add the epilog
+        help_message = help_message.split("\n\n")[0]  # keep only the 'usage' line
+
+        help_message += custom_epilog.replace("%(prog)s", script_name)
+
+        return help_message
+
+
 def main():
     """Main function to handle CLI arguments."""
-    parser = argparse.ArgumentParser(
-        description=f"{Colors.BOLD}Typst/Quarto Template Wizard CLI Tool{Colors.END}",
-        formatter_class=argparse.RawTextHelpFormatter,
-        epilog="""
-Usage Examples:
-  # 1. Setup (Run once after installing new templates.json):
-  python template_wizard_cli.py setup
-  
-  # 2. Search for a template:
-  python template_wizard_cli.py search "professional CV for job application"
-  
-  # 3. Search for a specific academic paper format:
-  python template_wizard_cli.py search "IEEE conference paper"
-        """,
-    )
-    subparsers = parser.add_subparsers(dest="command", required=True)
 
-    # Subcommand for SETUP
-    parser_setup = subparsers.add_parser(
-        "setup",
-        help=f"Generates semantic vectors from {TEMPLATE_FILE} and caches them to {VECTOR_CACHE_FILE}.",
-    )
-    parser_setup.set_defaults(func=setup_vectors)
+    # 1. Check for standard help flags
+    if any(arg in sys.argv for arg in ["-h", "--help"]):
+        parser_help = argparse.ArgumentParser(formatter_class=CustomHelpFormatter)
+        parser_help.print_help()
+        sys.exit(0)
 
-    # Subcommand for SEARCH
-    parser_search = subparsers.add_parser(
-        "search",
-        help="Performs semantic search using the cached vectors and launches an interactive FZF selector.",
-    )
+    # 2. Check for setup command
+    cli_args = sys.argv[1:]
+    if cli_args and cli_args[0].lower() == "setup":
+        parser_setup = argparse.ArgumentParser(
+            description=f"{Colors.BOLD}Typst/Quarto Template Wizard CLI Tool - Setup{Colors.END}",
+            formatter_class=CustomHelpFormatter,
+            add_help=False,
+        )
+        parser_setup.add_argument("command", help=argparse.SUPPRESS)
+        args = parser_setup.parse_args([cli_args[0]])
+        setup_vectors(args)
+        return
+
+    # 3. Handle SEARCH (Default mode or explicitly called with 'search')
+
+    # We use REMAINDER to capture all subsequent words for the query
+    parser_search = argparse.ArgumentParser(add_help=False)
     parser_search.add_argument(
-        "prompt",
-        type=str,
-        help="The natural language query describing the desired document.",
+        "query_args", nargs=argparse.REMAINDER, help=argparse.SUPPRESS
     )
-    parser_search.set_defaults(func=run_search)
+    args = parser_search.parse_args()
+    search_terms = args.query_args
 
-    # Execute the appropriate function
-    args = parser.parse_args()
-    args.func(args)
+    # --- Construct the prompt string ---
+
+    # If the first argument was 'search', strip it
+    if search_terms and search_terms[0].lower() == "search":
+        search_terms = search_terms[1:]
+
+    prompt = " ".join(search_terms).strip()
+
+    if not prompt:
+        # If no arguments were provided, print help text and exit
+        parser_help = argparse.ArgumentParser(formatter_class=CustomHelpFormatter)
+        parser_help.print_help()
+        sys.exit(0)
+
+    # 4. Run the search logic
+    search_args = argparse.Namespace(prompt=prompt)
+    run_search(search_args)
 
 
 if __name__ == "__main__":
